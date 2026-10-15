@@ -266,7 +266,7 @@
   /* [Mobile v0.1 CSS] begin */
   /* スマホ(iPhone 16e の横画面)用の見た目。PC版には掛からない: 全てのセレクタが html[data-ui="mobile"] から始まる(JSが、画面の大きさ・タッチ・向きから data-ui を決める)。
      色は新しく決めない: 買い/売りは :root の --replay-buy / --replay-sell(PCと共通の1か所)。ここには色コードを書かない。 */
-  html[data-ui="mobile"]{--tk-drawer-w:min(88vw,640px);--tk-safe-l:env(safe-area-inset-left,0px);--tk-safe-r:env(safe-area-inset-right,0px);--tk-safe-b:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%;touch-action:manipulation;}
+  html[data-ui="mobile"]{--tk-ctl-w:116px;--tk-drawer-w:min(88vw,640px);--tk-safe-l:env(safe-area-inset-left,0px);--tk-safe-r:env(safe-area-inset-right,0px);--tk-safe-b:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%;touch-action:manipulation;}
   html[data-ui="mobile"] body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}
   html[data-ui="mobile"] header{display:none;}
   html[data-ui="mobile"] .toolbar{display:none;}
@@ -306,6 +306,15 @@
   html[data-ui="mobile"] #tkDrawer .tk-opt.tk-on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:700;}
   html[data-ui="mobile"] #tkDrawer #tkDrawerClose{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);color:var(--text);font-size:18px;cursor:pointer;}
   html[data-ui="mobile"] #tkDrawer .tk-note{font-size:11.5px;color:var(--sub);line-height:1.5;}
+  html[data-ui="mobile"] #tkDrawer .tk-wide{width:100%;margin-top:6px;}
+  /* [v0.2] 確認の窓(期間を選び直す / 練習終了の前。ブラウザの確認ダイアログは使わない) */
+  html[data-ui="mobile"] #tkConfirm{position:fixed;left:0;top:0;right:0;bottom:0;z-index:9500;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:6px max(12px,var(--tk-safe-r)) 6px max(12px,var(--tk-safe-l));}
+  html[data-ui="mobile"] #tkConfirm .tk-cf-card{width:min(480px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;}
+  html[data-ui="mobile"] #tkConfirm .tk-cf-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+  html[data-ui="mobile"] #tkConfirm .tk-cf-text{font-size:12.5px;color:var(--sub);line-height:1.55;margin-bottom:10px;}
+  html[data-ui="mobile"] #tkConfirm .tk-cf-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  html[data-ui="mobile"] #tkConfirm .tk-cf-btns button{min-height:48px;font-size:15px;border-radius:12px;}
+  html[data-ui="mobile"] #tkRangeScreen #tkRangeMsg.tk-done{color:var(--sub);}
   html[data-ui="mobile"] #tkDrawer #replayCostBox{margin-bottom:0;}
   /* 日付範囲画面(最初の画面) */
   html[data-ui="mobile"] #tkRangeScreen{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:6px max(12px,var(--tk-safe-r)) 6px calc(60px + var(--tk-safe-l));}
@@ -319,10 +328,8 @@
   html[data-ui="mobile"] #tkRangeScreen #tkRangeMsg{min-height:16px;margin-top:6px;font-size:12px;color:#FFB74D;}
   html[data-ui="mobile"] #mergeImportBtn{display:none;}
   html[data-ui="mobile"] #tkNoData{padding:20px 20px 20px 70px;color:var(--sub);font-size:13px;line-height:1.7;}
-  /* チャート練習: 左レール(休場・指標) | チャート | 右レール(操作6つ)。チャートは幅の60%以上・高さの60%以上 */
-  html[data-ui="mobile"] #tkPractice{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:row;gap:6px;padding:4px max(6px,var(--tk-safe-r)) max(4px,var(--tk-safe-b)) max(6px,var(--tk-safe-l));background:var(--bg);}
-  html[data-ui="mobile"] #tkLeftRail{flex:0 0 52px;display:flex;flex-direction:column;gap:6px;padding-top:52px;}
-  html[data-ui="mobile"] #tkLeftRail .tk-rail-btn{width:100%;min-height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:12px;cursor:pointer;}
+  /* チャート練習: チャート | 右レール(アイコン行 + 操作6つ)。[v0.2] 左レール(休場・指標の常設ボタン)は無し = チャートが左端まで使う。余白は、safe-area を守る分(max)だけ */
+  html[data-ui="mobile"] #tkPractice{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:row;gap:4px;padding:2px max(3px,var(--tk-safe-r)) max(2px,var(--tk-safe-b)) max(3px,var(--tk-safe-l));background:var(--bg);}
   html[data-ui="mobile"] #tkChartCol{flex:1 1 0;min-width:0;min-height:0;display:flex;flex-direction:column;}
   html[data-ui="mobile"] #tkTopBar{flex:0 0 20px;height:20px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;padding:0 4px;}
   html[data-ui="mobile"] #tkTopBar #replayCursorLabel{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;}
@@ -335,10 +342,21 @@
   html[data-ui="mobile"] #tkChartWrap #replayCanvas{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
   html[data-ui="mobile"] #tkChartWrap #replayM1Canvas{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
   /* 1分足ペイン: 既存の仕様のまま。高さだけ、横画面の低い画面に合わせる(5分足が主役のまま) */
-  html[data-ui="mobile"] #tkChartWrap [data-m1-pane="replay"]{height:calc(100vh * 0.34) !important;min-height:0 !important;margin-top:4px !important;}
+  html[data-ui="mobile"] #tkChartWrap [data-m1-pane="replay"]{height:calc(100vh * 0.34) !important;height:var(--tk-m1-h, calc(100dvh * 0.34)) !important;min-height:0 !important;margin-top:0 !important;} /* [v0.2] 高さ = --tk-m1-h(境界のドラッグで変わる。JSがpxで入れる)。無い間は従来の34% */
+  /* [v0.2] 5分足 / 1分足の境界(スマホだけ。1分足がONの間だけ存在する): 当たり判定26pxで、レイアウト上は4px分(従来の1分足の上マージンと同じ)。上下に重ねるのは、5分足の時刻ラベル行と1分足の見出し行(どちらも操作の無い場所) */
+  html[data-ui="mobile"] #tkSplitter{flex:0 0 auto;height:26px;margin:-10px 0 -12px;position:relative;z-index:4;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:row-resize;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none;}
+  html[data-ui="mobile"] #tkSplitter::before{content:"";width:72px;height:5px;border-radius:3px;background:var(--line);opacity:.9;}
+  html[data-ui="mobile"] #tkSplitter.tk-drag::before, html[data-ui="mobile"] #tkSplitter:focus-visible::before{background:var(--accent);}
   html[data-ui="mobile"] #tkChartWrap #replayM1ToggleBtn{position:relative;}
   html[data-ui="mobile"] #tkChartWrap #replayM1ToggleBtn::after{content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);}
-  html[data-ui="mobile"] #tkControls{flex:0 0 116px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:0;}
+  html[data-ui="mobile"] #tkControls{flex:0 0 var(--tk-ctl-w);display:flex;flex-direction:column;justify-content:flex-start;gap:4px;min-height:0;overflow:auto;}
+  /* [v0.2] 右レールの先頭の行: [☰(下のfixedのボタンが重なる枠)][休場][指標]。最小サイズのアイコンで、押した時だけチャートの上に重ねて見せる */
+  html[data-ui="mobile"] #tkIconRow{flex:0 0 44px;display:flex;gap:2px;height:44px;}
+  html[data-ui="mobile"] #tkIconRow #tkMenuSlot{flex:0 0 44px;}
+  html[data-ui="mobile"] #tkIconRow .tk-ico{flex:1 1 0;min-width:0;height:44px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--sub);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  html[data-ui="mobile"] #tkIconRow .tk-ico svg{width:18px;height:18px;display:block;pointer-events:none;}
+  html[data-ui="mobile"] #tkIconRow .tk-ico[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+  html[data-ui="mobile"][data-tkview="replay-live"] #tkMenuBtn{left:auto;top:2px;right:calc(max(3px,var(--tk-safe-r)) + var(--tk-ctl-w) - 44px);width:44px;height:44px;}
   html[data-ui="mobile"] #tkControls .tk-ctl{width:100%;min-height:44px;padding:0 6px;font-size:14px;border-radius:10px;touch-action:manipulation;}
   html[data-ui="mobile"] #tkControls #tkRedLine{display:flex;align-items:center;gap:4px;padding:0 6px;background:var(--panel);border:1px solid var(--line);color:var(--text);cursor:pointer;font-size:12px;white-space:nowrap;}
   html[data-ui="mobile"] #tkControls #tkRedLine input{width:22px;height:22px;margin:0;flex:0 0 auto;}
@@ -347,9 +365,11 @@
   html[data-ui="mobile"] #tkControls #replayKeyHint{display:none;}
   html[data-ui="mobile"] #tkControls #replayRedLineGateHint{display:none;}
   /* 休場・指標の一覧(チャートの上に出す小さなパネル。閉じるボタンは44px以上) */
-  html[data-ui="mobile"] #tkEventsPanel{position:fixed;left:calc(60px + var(--tk-safe-l));right:calc(124px + var(--tk-safe-r));top:6px;bottom:6px;z-index:8500;background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;}
+  /* [v0.2] チャートの上に重ねる半透明のパネル(押している間 / ONの間だけ)。チャートの左上寄り・幅は最大56%・高さは画面の6割まで。それ以外のチャートは、そのまま操作できる */
+  html[data-ui="mobile"] #tkEventsPanel{position:fixed;left:calc(max(3px,var(--tk-safe-l)) + 6px);top:26px;width:min(56vw,520px);max-height:calc(100dvh * 0.62);z-index:8500;background:rgba(14,18,24,0.88);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;}
+  html[data-ui="mobile"] #tkEventsPanel[data-peek="1"]{pointer-events:none;}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 2px 12px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700;}
-  html[data-ui="mobile"] #tkEventsPanel #tkEventsClose{width:48px;height:48px;border:none;background:none;color:var(--text);font-size:20px;cursor:pointer;}
+  html[data-ui="mobile"] #tkEventsPanel #tkEventsClose{width:44px;height:44px;border:none;background:none;color:var(--text);font-size:20px;cursor:pointer;}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-body{flex:1 1 0;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:2px 12px;}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-row{font-size:12.5px;line-height:1.45;padding:5px 0;border-bottom:1px dashed var(--line);}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-none{font-size:12.5px;color:var(--sub);padding:10px 0;}
@@ -1710,6 +1730,7 @@ async function importAllData(ev){
     await saveFtoTrades();
     await saveReplayPracticeRuns();
     await saveReplayObservations();
+    if(Array.isArray(data.econEvents)) await saveEconEvents(); // [Restore保存漏れ修正 2026-10-15] 経済指標(econEvents)もstateに入れた分を保存する(他のsave*と同じ。Backupに無ければ、何も書かない = 従来どおり)
     await saveMql5Events();
     await saveHolidays();
     await saveEconGithubUrl();
@@ -3348,13 +3369,13 @@ function drawReplayChart(){
   try{
     chartState.candles = view; chartState.ind = cache.ind;
     state.econEvents = replayEconView(savedEcon, cursorKey, dateLo, dateHi); state.mql5Events = replayEconView(savedMql5, cursorKey, dateLo, dateHi);
-    layout = drawImg2Core(canvas, left, right, cssWidth, cssHeight, 'daythumb', null, dateLo, dateHi, rs.redLines, null, true, true, real.length-1, null, true, null, null, null, replayChartHover);
+    layout = drawImg2Core(canvas, left, right, cssWidth, cssHeight, 'daythumb', null, dateLo, dateHi, rs.redLines, null, true, true, real.length-1, null, true, null, null, null, replayChartHover, null, null, null, (typeof tkIsMobile==='function' && tkIsMobile()) ? rs.windowSize : null); // [スマホ v0.2] 最後の引数 = 表示密度の下限。スマホだけ(PCは従来のまま = null)
   } finally {
     chartState.candles = savedCandles; chartState.ind = savedInd; state.econEvents = savedEcon; state.mql5Events = savedMql5;
   }
   replayChartLayout = layout;
   rs._vp = { cursorKey, windowSize:rs.windowSize, panOffset:rs.panOffset, nReal:real.length, nSlots:vp.nSlots, autoRight:vp.autoRight, minOffset:vp.minOffset, left, right, cutoffIdx:real.length-1,
-    leftTime: view[left].date+' '+view[left].time, rightTime: view[right].date+' '+view[right].time, lastRealTime: real[real.length-1].date+' '+real[real.length-1].time, cw: layout ? layout.cw : null };
+    leftTime: view[left].date+' '+view[left].time, rightTime: view[right].date+' '+view[right].time, lastRealTime: real[real.length-1].date+' '+real[real.length-1].time, cw: layout ? layout.cw : null, off: layout ? (layout.off||0) : 0 };
   if(layout){
     const ctx = canvas.getContext('2d');
     replayDrawSessionRefs(ctx, layout, cssWidth); // [Session Reference Line] NYだけ: MediumSeaGreen / Gold の実体高値・安値(読み取り専用。red_linesとは別。EUROPEは何も描かない)
@@ -3435,7 +3456,7 @@ function bindReplayChartHoverHandler(canvas){
     }
     if(!replayChartLayout) return;
     const d = replayChartLayout;
-    const idx = Math.round((ev.offsetX-d.padL)/d.cw + d.left - 0.5);
+    const idx = Math.round((ev.offsetX-d.padL)/d.cw + d.left - 0.5 - (d.off||0)); // d.off = 左の空白の列数(スマホ v0.2。足が少ない日だけ。PCは0)
     if(idx<d.left || idx>d.right){ replayChartHover=null; hideQuizChartTooltip(); drawReplayChart(); return; }
     replayChartHover = {idx, y: ev.offsetY};
     drawReplayChart();
@@ -8840,7 +8861,7 @@ function horizontalLineStyle(dpr, preview){ return { color:HORIZONTAL_LINE_STYLE
 // ---- MA / MTMA / ボリンジャーバンドの線の太さ(5分足 drawImg2Core と、1分足ペインの MA / BB が、同じ関数を読む)。preview(チャートタブ)= 1px / それ以外(daythumb・thumb)= 0.5px。boldIndicators(チャート練習・問題集)= 2倍 ----
 function indicatorLineWidth(mode, bold, dpr){ const lw = (mode==='preview' ? 1 : 0.5)/dpr; return bold ? lw*2 : lw; }
 function horizontalLineApply(ctx, dpr, preview, color){ const st = horizontalLineStyle(dpr, preview); ctx.strokeStyle = color || st.color; ctx.lineWidth = st.lineWidth; ctx.setLineDash(st.dash); return st; }
-function drawImg2Core(canvas, left, right, cssWidth, cssHeight, mode, selectedArrowId, dateLo, dateHi, overrideRedLines, indOverride, hideArrows, showInd, candleCutoffIdx, highlightArrowIds, boldIndicators, liveArrow, arrowHighlight, ftoTradeToShow, hoverInfo, candlesOverride, tokyoCutoffIdx, arrowCutoffIdx){
+function drawImg2Core(canvas, left, right, cssWidth, cssHeight, mode, selectedArrowId, dateLo, dateHi, overrideRedLines, indOverride, hideArrows, showInd, candleCutoffIdx, highlightArrowIds, boldIndicators, liveArrow, arrowHighlight, ftoTradeToShow, hoverInfo, candlesOverride, tokyoCutoffIdx, arrowCutoffIdx, minCount){
   mode = mode || 'thumb'; // 'thumb'=テーブルの小さいプレビュー(固定構成) / 'preview'=拡大表示(チャートタブのON/OFFをそのまま反映)
   // candlesOverride/indOverride指定時は、chartState.candles/chartState.indの代わりにそれを使う
   // (パターン集/親パターン集のサムネイルがglobal chart working setに触れないようにするため)
@@ -8859,7 +8880,7 @@ function drawImg2Core(canvas, left, right, cssWidth, cssHeight, mode, selectedAr
   ctx.fillStyle = '#000000';
   ctx.fillRect(0,0,cssWidth,cssHeight);
 
-  const count = right-left+1;
+  const off = Math.max(0, (minCount||0) - (right-left+1)), count = right-left+1+off; // minCount(スマホ v0.2。チャート練習だけが渡す = 表示本数): 足が少ない間(データの最初の日)も、表示密度(1本の幅)を一定に保ち、最新足の位置も2日目以降と同じ(右寄せ)にする。足の無い左側(off 本分)は空白のまま(何も描かない・足も足さない)。未指定 = off は0 = 従来どおり
   // showInd(祝日・経済指標行を表示する)時は上部に余白を確保する。
   // 高さ250px未満の小さいキャンバス(テーブルサムネイル等)はcompact=trueとし、帯・アイコンを極小(22px分)にする。
   // 大きいプレビュー(編集画面・拡大表示など)はチャートタブと同じ54px分を確保する。
@@ -8876,7 +8897,7 @@ function drawImg2Core(canvas, left, right, cssWidth, cssHeight, mode, selectedAr
   const margin = (maxP-minP)*0.08 || 0.001;
   minP -= margin; maxP += margin;
   const priceToY = p => padT + (maxP-p)/(maxP-minP)*plotH;
-  const idxToX = i => padL + (i-left+0.5)*cw;
+  const idxToX = i => padL + (i-left+off+0.5)*cw;
   const plotBottom = padT+plotH;
   const hourLabelY = plotBottom+11;
   const bandStripY0 = plotBottom+16, bandStripH = 8; // セッション帯を時刻ラベルの下の専用行に配置(重なり防止)
@@ -9075,7 +9096,7 @@ function drawImg2Core(canvas, left, right, cssWidth, cssHeight, mode, selectedAr
     }
     ctx.restore();
   }
-  return {left,right,idxToX,priceToY,cw,padL,padT,plotH,minP,maxP};
+  return {left,right,idxToX,priceToY,cw,padL,padT,plotH,minP,maxP,off};
 }
 // 起点・終点(日時+価格)を、渡された座標変換関数で画面座標に変換して矢印を描く
 // ピンバー判定: 実体があれば通常、実体がほぼ無ければピンバー(White)というシンプルな定義
@@ -10704,12 +10725,51 @@ function replayDrawSessionRefs(ctx, layout, cssWidth){
   }); });
   ctx.restore(); if(rs) rs._refDrawn = drawn;
 }
+// ---- [チャートタブ] NY Reference水平線の常時表示 ----
+//   Gold 2本(前日夜のNYレンジ = 実体高値・実体安値)/ MediumSeaGreen 2本(当日の既定レンジ = 実体高値・実体安値)。新しい計算は作らない: 価格は replayMarketComputeRefs('NY', ...)(= チャート練習と同じ定義・同じ関数。夏冬・月曜のGold・実体高安も、その中のまま)
+//   どのReference日の線を出すか = 「いま見えているチャートの水平中央にあるローソク足」の市場時刻だけで決める(右端・カーソル・現在時刻・選択日は使わない)。パンして中央の足が次の日に入ると、線も切り替わる
+//   Reference日 = 中央の足の市場時刻 − 6時間 の日付(06:00に日が替わる。Goldの終わり 05:55 の直後に MediumSeaGreen が始まる = チャート練習のNYセッション(前日21:00/22:00 〜 翌06:00)と同じ区切り)
+//   表示専用: ドラッグ・水平線モード・red_lines・Run・Gateに使わない / Y軸の範囲にも入れない(範囲の外にある線は見えない = チャート練習と同じ) / Case Review中は出さない(未来が見えてしまうため)
+const CHART_NY_REF_ROLLOVER_H = 6;
+function chartNyRefMarketDate(centerKey){ // 'YYYY-MM-DD HH:MM' → 'YYYY-MM-DD'
+  const t = Date.UTC(+centerKey.slice(0,4), +centerKey.slice(5,7)-1, +centerKey.slice(8,10), +centerKey.slice(11,13), +centerKey.slice(14,16)) - CHART_NY_REF_ROLLOVER_H*3600000;
+  return new Date(t).toISOString().slice(0,10);
+}
+function chartNyRefCenterIdx(left, right){ return left + Math.floor((right-left+1)/2); } // 水平中央のx(プロット幅の1/2)が入る足。本数が偶数で、ちょうど足の境目に当たる時は、右側の足
+function chartNyRefsAt(candles, left, right){
+  if(!candles || !candles.length || !(right >= left)) return null;
+  const ci = Math.min(candles.length-1, chartNyRefCenterIdx(left, right)), cd = candles[ci], key = cd.date+' '+cd.time, md = chartNyRefMarketDate(key);
+  const c = chartState._nyRefCache;
+  let refs = (c && c.candles===candles && c.len===candles.length && c.md===md) ? c.refs : null;
+  if(!refs){ refs = replayMarketComputeRefs('NY', md, candles, null); chartState._nyRefCache = { candles, len:candles.length, md, refs }; } // 同じ日・同じデータの間は、再計算しない(描画のたびに全足を走査しない)
+  return refs ? { centerIdx:ci, centerKey:key, marketDate:md, refs } : null;
+}
+function chartDrawNyRefs(ctx, L){ // L = { left, right, padL, padR, padT, plotH, cssWidth, priceToY }
+  chartState._nyRef = null;
+  if(typeof caseReviewBlind==='function' && caseReviewBlind()) return;
+  const info = chartNyRefsAt(chartState.candles, L.left, L.right); if(!info) return;
+  const top = L.padT, bottom = L.padT + L.plotH, dpr = window.devicePixelRatio||1, drawn = [];
+  ctx.save();
+  info.refs.forEach(r=>{ [['high', r.high], ['low', r.low]].forEach(([side, p])=>{
+    if(p==null) return;
+    const y = L.priceToY(p), visible = y>=top && y<=bottom; drawn.push({ id:r.id, side, price:p, y, visible });
+    if(!visible) return;
+    horizontalLineApply(ctx, dpr, false, r.color); // 太さ・線種(実線)は、チャート練習のReferenceと同じ(HORIZONTAL_LINE_STYLE)。色だけ MediumSeaGreen / Gold
+    ctx.beginPath(); ctx.moveTo(L.padL, y); ctx.lineTo(L.cssWidth-L.padR, y); ctx.stroke();
+  }); });
+  ctx.restore(); chartState._nyRef = { ...info, drawn };
+}
+window.chartNyRefState = function(){ return chartState._nyRef ? { centerIdx:chartState._nyRef.centerIdx, centerKey:chartState._nyRef.centerKey, marketDate:chartState._nyRef.marketDate, refs:chartState._nyRef.refs.map(r=> ({ id:r.id, color:r.color, from:r.from, to:r.to, high:r.high, low:r.low, count:r.count })), drawn:chartState._nyRef.drawn.map(d=> ({ ...d })) } : null; };
 // 1分足ペイン: 5分足で計算した同じ価格を、そのまま引く(M1から高安を計算し直さない)。5分足側の記録(_refDrawn)は、書き換えない
 function m1PaneMarket(screen){ return screen==='replay' ? replayMarketOfState(replayState) : screen==='chart' ? replayMarket.selected : 'EUROPE'; }
 // ---- 1分足ペインの時間ガイド [2026-10-13] ----
 //   xx:05 / 10 / … / 55 = 薄い白の細い点線(5本の1分足 = 1本の5分足、を見分けるため) / xx:00 = 白い縦線(点線より明確。00分には5分点線を重ねない)。どちらも、ローソク足・Gold縦線より背面(描画順は m1PaneRender)
 //   1分足が実在する位置にだけ引く(Gold縦線と同じ)。Market縦線(Gold)とは別の線として、内部的にも独立(m1Pane.drawn[screen].time_guides)
 const M1_TIME_GUIDE = { FIVE:{ color:'rgba(255,255,255,0.18)', devicePx:0.5, dash:[1,3] }, HOUR:{ color:'rgba(255,255,255,0.75)', devicePx:1, dash:[] } };
+// [スマホ v0.2] 実機で薄すぎた5分点線(xx:05〜55)を、スマホだけ1段階(5分足の1時間線と同じ: 0.5 → 1 デバイスpx・0.18 → 0.24)。00分の白縦線は、すでに明確なので変えない(5分点線 < 00分線の上下は保つ)。m1PaneDrawTimeGuides の本文は変えず、この表の中身だけを画面(スマホ / PC)で切り替える(tkGuideApply)
+const M1_TIME_GUIDE_BASE = { FIVE:{ ...M1_TIME_GUIDE.FIVE, dash:M1_TIME_GUIDE.FIVE.dash.slice() }, HOUR:{ ...M1_TIME_GUIDE.HOUR, dash:M1_TIME_GUIDE.HOUR.dash.slice() } };
+const M1_TIME_GUIDE_MOBILE = { FIVE:{ color:'rgba(255,255,255,0.24)', devicePx:1, dash:[1,3] }, HOUR:{ ...M1_TIME_GUIDE.HOUR, dash:M1_TIME_GUIDE.HOUR.dash.slice() } };
+function tkGuideApply(){ const src = (typeof tkIsMobile==='function' && tkIsMobile()) ? M1_TIME_GUIDE_MOBILE : M1_TIME_GUIDE_BASE; ['FIVE', 'HOUR'].forEach(k=> { M1_TIME_GUIDE[k] = { ...src[k], dash:src[k].dash.slice() }; }); }
 function m1PaneDrawTimeGuides(ctx, cs, left, lastReal, idxToX, padT, plotBottom, dpr){
   const rec = { five:[], hour:[] };
   ctx.save();
@@ -10758,8 +10818,8 @@ function m1PaneDrawGold(ctx, screen, cs, left, lastReal, idxToX, padT, plotBotto
   return rec;
 }
 function m1PaneDrawRefs(ctx, model, priceToY, padL, axisX, padT, plotBottom){
-  const rec = []; if(!(model && model.replay && replayState)) return rec;
-  const refs = replayMarketRefsOf(replayState); if(!refs) return rec;
+  const rec = [], refs = (model && model.replay && replayState) ? replayMarketRefsOf(replayState) : (model && model.chartRefs) || null; // チャート練習 = セッション開始時に計算したReference / チャートタブ = 5分足の中央の足で決まったReference(chartNyRefsAt。5分足と同じ4つの価格)
+  if(!refs) return rec;
   const dpr = window.devicePixelRatio||1;
   ctx.save();
   refs.forEach(r=>{ [['high', r.high], ['low', r.low]].forEach(([side, p])=>{
@@ -11031,7 +11091,7 @@ function m1PaneSlotInnerHtml(screen){
   const hdr = `<div style="display:flex;justify-content:space-between;align-items:center;height:16px;font-size:10.5px;color:var(--sub);padding:0 2px;"><span>1分足(Raw M1)</span><span id="${id.canvas}Info" data-m1-info="${screen}"></span></div>`;
   const cv = `<canvas id="${id.canvas}" width="900" height="200" style="width:100%;${screen==='chart' ? 'height:230px;' : 'flex:1;min-height:0;'}display:block;border-radius:10px;background:#000;cursor:crosshair;"></canvas><div class="chart-tooltip" id="${id.canvas}Tip"></div>`;
   if(screen === 'chart') return `<div class="chart-canvas-wrap" data-m1-pane="chart" style="margin-top:8px;padding:6px 8px;position:relative;">${hdr}${cv}</div>`;
-  return `<div data-m1-pane="${screen}" style="flex:0 0 auto;height:clamp(170px,34vh,340px);display:flex;flex-direction:column;margin-top:6px;position:relative;">${hdr}${cv}</div>`;
+  return `${(screen==='replay' && typeof tkIsMobile==='function' && tkIsMobile()) ? tkSplitterHtml() : ''}<div data-m1-pane="${screen}" style="flex:0 0 auto;height:clamp(170px,34vh,340px);display:flex;flex-direction:column;margin-top:6px;position:relative;">${hdr}${cv}</div>`; // [スマホ v0.2] 5分足との境界(つまみ)は、スマホのチャート練習の時だけ。PCは従来のまま
 }
 function m1PaneSlotHtml(screen){ return `<div id="${M1_PANE_IDS[screen].slot}" style="${screen==='chart' ? '' : 'display:contents;'}">${m1PaneSlotInnerHtml(screen)}</div>`; }
 function m1PanePillHtml(screen){ // 5分足の右上に重ねる開閉ボタン(レイアウトに高さ・幅を足さない = 閉じている間、5分足の大きさは従来と同じ)
@@ -11098,6 +11158,7 @@ function m1PaneModelChart(){
   const m = m1PaneStoreModel(anchorKey, 'chart'); if(!m.ok) return m;
   const V = chartState.visible, blind = (typeof caseReviewBlind === 'function') && caseReviewBlind(), auto = chartState.autoDisplayMode === 'auto';
   m.arrows = blind ? [] : m1PaneArrowItems(!!V.arrows && !auto, !!V.arrowsHtf && !auto); // 5分足と同じ表示条件。Case Review / Step Replay中は、出さない
+  m.chartRefs = (!blind && chartState._nyRef) ? chartState._nyRef.refs : null; // NY Reference(5分足で算出した同じ4つの価格。M1から計算し直さない)。5分足と同じく Case Review中は出さない
   const fc = chartState.candles[Math.max(0, chartState.rightIndex - Math.floor(chartState.windowSize*0.3))]; // 5分足の「この日時へ」が、目的の足を置く位置(右端から窓の30%手前)。1分足は、この時刻が見える位置に合わせる(見る位置だけ。データはanchorKey=右端まで)
   m.focusKey = fc ? m1Key(fc) : null;
   if(m1Pane.follow.chart !== anchorKey){ m1Pane.follow.chart = anchorKey; m1Pane.pan.chart = 0; m1Pane.focusPending.chart = true; }
@@ -11153,13 +11214,13 @@ function m1PaneRender(screen, canvas, model){
     if(fi != null){ m1Pane.pan[screen] = chartViewportClampRight(Math.min(vp.autoRight, fi + Math.round(vp.win*0.3)) - vp.autoRight, vp.minOffset, 0); vp = m1PaneViewport(screen, n); }
   }
   const left = vp.left, right = vp.right, lastReal = Math.min(right, n-1);
-  const padL = M1_PANE_STYLE.PAD_L, padR = REPLAY_PRICE_AXIS_W, padT = M1_PANE_STYLE.PAD_T, padB = M1_PANE_STYLE.PAD_B, plotW = cssWidth-padL-padR, plotH = Math.max(10, cssHeight-padT-padB), cw = plotW/(right-left+1), axisX = cssWidth-padR;
+  const padL = M1_PANE_STYLE.PAD_L, padR = REPLAY_PRICE_AXIS_W, padT = M1_PANE_STYLE.PAD_T, padB = M1_PANE_STYLE.PAD_B, plotW = cssWidth-padL-padR, plotH = Math.max(10, cssHeight-padT-padB), cols = Math.max(right-left+1, (typeof tkIsMobile==='function' && tkIsMobile()) ? vp.win : 0), off = cols-(right-left+1), cw = plotW/cols, axisX = cssWidth-padR; // [スマホ v0.2] 1分足が少ない間(データの最初の日)も、1本の幅を一定に保ち(cols >= vp.win = 表示本数)、最新足は右寄せ(足の無い左側 off 列は空白)。PCは従来のまま(off = 0)
   let minP = Infinity, maxP = -Infinity;
   for(let i=left;i<=lastReal;i++){ minP = Math.min(minP, cs[i].l); maxP = Math.max(maxP, cs[i].h); }
   if(!(isFinite(minP) && isFinite(maxP))){ fail('表示範囲に1分足がありません'); return; }
   const margin = (maxP-minP)*0.08 || 0.001; minP -= margin; maxP += margin;
-  const priceToY = p=> padT + (maxP-p)/(maxP-minP)*plotH, idxToX = i=> padL + (i-left+0.5)*cw, plotBottom = padT+plotH;
-  const lay = { left, right, idxToX, priceToY, cw, padL, padT, plotH, minP, maxP, nSlots:vp.nSlots, axisX, cssWidth };
+  const priceToY = p=> padT + (maxP-p)/(maxP-minP)*plotH, idxToX = i=> padL + (i-left+off+0.5)*cw, plotBottom = padT+plotH;
+  const lay = { left, right, idxToX, priceToY, cw, padL, padT, plotH, minP, maxP, nSlots:vp.nSlots, axisX, cssWidth, off };
   // 価格グリッド(5分足と同じ見た目: 10pips刻みは各画面の「10pips」設定 / 100pips = 赤 / 1000pips = 黄)
   const step = 0.00001*100, show10 = m1PaneGrid10(screen);
   ctx.lineWidth = 0.5/dpr; ctx.setLineDash([1,2]);
@@ -11241,7 +11302,7 @@ function m1PaneRender(screen, canvas, model){
   const lastKey = m1Key(cs[lastReal]);
   if(info) info.textContent = lastKey.slice(5)+' まで(未来の1分足は表示しません)'+(hiddenRight ? ' / 右の外に矢印 '+hiddenRight+'本(左へドラッグで見えます)' : '');
   m1Pane.drawn[screen] = { screen, ok:true, count:lastReal-left+1, n, firstKey:m1Key(cs[left]), lastKey, frontierKey:fk, anchorKey:model.anchorKey, left, right, win:vp.win, nSlots:vp.nSlots, pan:vp.pan, minOffset:vp.minOffset, maxOffset:vp.maxOffset, hiddenRight,
-    minP, maxP, cw, padL, padT, plotH, axisX, cssWidth, cssHeight, visMaxH, visMinL, lines, arrows, highlights:hl, trades, current_price:cur, pips_bar:pips, breakeven:be, gold_lines:goldRec, ref_lines:refRec, time_guides:guideRec, indicators:indRec };
+    minP, maxP, cw, off, padL, padT, plotH, axisX, cssWidth, cssHeight, visMaxH, visMinL, lines, arrows, highlights:hl, trades, current_price:cur, pips_bar:pips, breakeven:be, gold_lines:goldRec, ref_lines:refRec, time_guides:guideRec, indicators:indRec };
 }
 function m1PaneRedraw(screen){
   if(!m1Pane.on[screen]) return;
@@ -11277,7 +11338,7 @@ function m1PaneBind(screen, canvas){
       const vp = m1PaneViewport(screen, (m1Pane.drawn[screen] && m1Pane.drawn[screen].n) || 0);
       m1Pane.pan[screen] = chartViewportClampRight(m1Pane.drag.startPan + chartViewportDragShift(ev.offsetX - m1Pane.drag.startX, L.cw), vp.minOffset, vp.maxOffset); m1PaneRedraw(screen); return;
     }
-    const idx = Math.round((ev.offsetX - L.padL)/L.cw + L.left - 0.5), d = m1Pane.drawn[screen], t = tip();
+    const idx = Math.round((ev.offsetX - L.padL)/L.cw + L.left - 0.5 - (L.off||0)), d = m1Pane.drawn[screen], t = tip();
     if(!d || !d.ok || idx < L.left || idx > Math.min(L.right, d.n-1)){ m1Pane.hover[screen] = null; if(t) t.style.display = 'none'; m1PaneRedraw(screen); return; }
     m1Pane.hover[screen] = { idx, y:ev.offsetY }; m1PaneRedraw(screen);
     const cd = m1Pane.cands && m1Pane.cands[screen] && m1Pane.cands[screen][idx];
@@ -18201,11 +18262,16 @@ function drawPriceGrid(ctx, minP, maxP, padL, padR, cssWidth, priceToY){
   }
   ctx.setLineDash([]);
 }
+// 1時間ごとの縦点線(白・点線・背景レイヤー)の線スタイル。PC = 従来の値。[スマホ v0.2] 実機で薄すぎたため、スマホだけ1段階(線の太さ 0.5 → 1 デバイスpx・不透明度 0.18 → 0.24)。色(白)・線種(点線)・描画順(ローソク足より背面)・Gold縦線との違いは同じ
+const HOUR_GRID_STYLE = { color:'rgba(255,255,255,0.18)', devicePx:0.5, dash:[1,3] };
+const HOUR_GRID_STYLE_MOBILE = { color:'rgba(255,255,255,0.24)', devicePx:1, dash:[1,3] };
+function hourGridStyle(){ return (typeof tkIsMobile==='function' && tkIsMobile()) ? HOUR_GRID_STYLE_MOBILE : HOUR_GRID_STYLE; }
 // CustomTimeGrid: 時間軸の縦点線+時刻ラベル(毎正時)。showLabels=falseでラベルなし(小さいプレビュー用)
 function drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, labelY, showLabels){
   if(showLabels===undefined) showLabels = true;
-  ctx.setLineDash([1,3]);
-  ctx.lineWidth = 0.5/(window.devicePixelRatio||1);
+  const hg = hourGridStyle();
+  ctx.setLineDash(hg.dash);
+  ctx.lineWidth = hg.devicePx/(window.devicePixelRatio||1);
   // 1時間(=5分足12本)あたりの実際の表示幅に収まるよう、フォントサイズを自動計算する
   // (2桁の数字"23"の実測幅が、間隔の85%以内に収まる最大サイズを10px〜4pxの範囲で探す)
   const hourGapPx = cw*12;
@@ -18220,7 +18286,7 @@ function drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, labelY
     const cd = candles[i];
     if(cd.time.endsWith(':00')){
       const x = idxToX(i); // ローソク足の中心に合わせる
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.strokeStyle = hg.color;
       ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke();
       if(showLabels){
         ctx.fillStyle = getCssVar('--sub');
@@ -18377,6 +18443,8 @@ function drawChart(){
   }
   // ---- TokyoBodyRange(東京セッションの実体高安) ----
   if(V.tokyoRange) drawTokyoBodyRange(ctx, candles, left, right, idxToX, cw, priceToY);
+  // ---- NY Reference水平線(常時表示。中央の足の市場時刻で決まる4本。表示専用) ----
+  chartDrawNyRefs(ctx, { left, right, padL, padR, padT, plotH, cssWidth, priceToY });
   // ---- 市場休日・1行目(一番上の帯。国ごとに実際にその市場が開いている時間帯だけ表示) ----
   chartState.holidayMarkerPositions = [];
   if(V.holidays){
@@ -25164,7 +25232,8 @@ mergeImportInstall();
    - Observation(所感)は、スマホでは出さない。所感が無くても、練習は止まらない: 最初の「進める」で、「所感なし」の確定(observation_version_id = null)を作る。新しい所感Versionも、空の下書きも作らない。既存の所感には触れない
    - 保存はしない: スマホの画面の状態(メニューの開閉・終了日・向き)は、この変数 tkUi だけ(state・Storageに足さない)
    ------------------------------------------------------------ */
-var tkUi = { mode:'desktop', orient:'landscape', rangeFrom:'', rangeTo:'', rangeEnd:'', drawer:false, touch:null, starting:false, resizeTimer:null, installed:false };
+var tkUi = { mode:'desktop', orient:'landscape', rangeFrom:'', rangeTo:'', rangeEnd:'', drawer:false, touch:null, starting:false, resizeTimer:null, installed:false,
+  notice:'', leaving:false, confirm:null, events:null, evPeek:null, evTimer:null, evSuppressClick:false, m1Ratio:null, split:null }; // [v0.2] notice = 期間選択画面に出す一言 / events・evPeek = 指標・休場の重ね表示(ON・押している間) / m1Ratio = 1分足ペインの高さの割合(境界のドラッグ。画面を開いている間だけ)
 const TK_SHORT_ENTER = 500, TK_SHORT_LEAVE = 600, TK_PRACTICE_VIEWS = ['replay', 'quiz', 'ftoLog'];
 function tkIsMobile(){ return tkUi.mode==='mobile'; }
 function tkUiOverride(){ const m = /[?&]ui=(mobile|desktop)(&|$)/.exec(window.location.search || ''); return m ? m[1] : null; }
@@ -25177,6 +25246,7 @@ function tkDetect(){
   const orient = w >= h ? 'landscape' : 'portrait', flipped = next !== tkUi.mode, de = document.documentElement;
   tkUi.mode = next; tkUi.orient = orient; de.setAttribute('data-ui', next); de.setAttribute('data-orient', orient);
   if(next!=='mobile') de.removeAttribute('data-tkview');
+  tkGuideApply();
   return flipped;
 }
 function tkApply(initial){
@@ -25189,14 +25259,14 @@ function tkShellEnsure(){
   if(document.getElementById('tkMenuBtn')) return;
   document.body.insertAdjacentHTML('beforeend', `<button type="button" id="tkMenuBtn" aria-label="メニュー" onclick="tkDrawerToggle()">☰</button><div id="tkDrawerScrim" onclick="tkDrawerClose()"></div><div id="tkDrawer" role="dialog" aria-label="メニュー"></div><div id="tkPortraitWarn" role="alert"><div class="tk-pw-icon">⟳</div><div class="tk-pw-text">端末を横向きにしてください</div><div class="tk-pw-sub">チャート練習は横画面で使います(向きは固定しません。横にすると、そのまま続きから使えます)</div></div>`);
 }
-function tkShellRemove(){ ['tkMenuBtn', 'tkDrawerScrim', 'tkDrawer', 'tkPortraitWarn', 'tkEventsPanel'].forEach(id=>{ const e = document.getElementById(id); if(e) e.remove(); }); tkUi.drawer = false; }
+function tkShellRemove(){ ['tkMenuBtn', 'tkDrawerScrim', 'tkDrawer', 'tkPortraitWarn', 'tkEventsPanel', 'tkConfirm'].forEach(id=>{ const e = document.getElementById(id); if(e) e.remove(); }); tkUi.drawer = false; tkUi.events = null; tkUi.evPeek = null; tkUi.confirm = null; document.documentElement.style.removeProperty('--tk-m1-h'); }
 // ---- ☰ メニュー: 市場 / 練習系 / 取引コスト / データ ----
 function tkDrawerHtml(){
   const mk = replayMarket.selected, on = m=> mk===m ? ' tk-on' : '', cur = v=> state.view===v ? ' tk-on' : '';
   const cost = replayState ? `<div id="replayCostPanel">${replayCostPanelHtml()}</div>` : `<div class="tk-note">取引コストは、練習を始めてから設定できます(PCと同じ設定です)</div>`;
   return `<div class="tk-dhead"><b>メニュー</b><button type="button" id="tkDrawerClose" aria-label="閉じる" onclick="tkDrawerClose()">✕</button></div>
     <section data-tk-sec="market"><h4>市場</h4><div class="tk-row2"><button type="button" id="tkMarketBtn_EUROPE" class="tk-opt${on('EUROPE')}" aria-pressed="${mk==='EUROPE'}" onclick="tkSetMarket('EUROPE')">欧州</button><button type="button" id="tkMarketBtn_NY" class="tk-opt${on('NY')}" aria-pressed="${mk==='NY'}" onclick="tkSetMarket('NY')">NY</button></div></section>
-    <section data-tk-sec="practice"><h4>練習系</h4><div class="tk-row3"><button type="button" id="tkNav_replay" class="tk-opt${cur('replay')}" onclick="tkNav('replay')">チャート練習</button><button type="button" id="tkNav_quiz" class="tk-opt${cur('quiz')}" onclick="tkNav('quiz')">チャート問題集</button><button type="button" id="tkNav_ftoLog" class="tk-opt${cur('ftoLog')}" onclick="tkNav('ftoLog')">練習ログ</button></div></section>
+    <section data-tk-sec="practice"><h4>練習系</h4><div class="tk-row3"><button type="button" id="tkNav_replay" class="tk-opt${cur('replay')}" onclick="tkNav('replay')">チャート練習</button><button type="button" id="tkNav_quiz" class="tk-opt${cur('quiz')}" onclick="tkNav('quiz')">チャート問題集</button><button type="button" id="tkNav_ftoLog" class="tk-opt${cur('ftoLog')}" onclick="tkNav('ftoLog')">練習ログ</button></div>${replayState ? `<button type="button" id="tkReselect" class="tk-opt tk-wide" onclick="tkReselectClick()">期間を選び直す</button>` : ''}</section>
     <section data-tk-sec="cost"><h4>取引コスト</h4>${cost}</section>
     <section data-tk-sec="data"><h4>データ</h4><div class="tk-row3"><button type="button" id="tkDataBackup" class="tk-opt" onclick="tkDataBackup()">Backup</button><button type="button" id="tkDataRestore" class="tk-opt" onclick="tkDataPick('importFileInput')">Restore</button><button type="button" id="tkDataMerge" class="tk-opt" onclick="tkDataPick('mergeFileInput')">Merge Import</button></div></section>`;
 }
@@ -25219,7 +25289,7 @@ function tkRangeHtml(){
     <h2>練習する期間</h2>
     <div class="tk-sub">開始日の${replayMarketStartLabel()}から始まります。終了日まで「次の日へ」で進めます。</div>
     <div class="tk-dates"><label>開始日<input type="date" id="tkRangeFrom" value="${from}" min="${b.min}" max="${b.max}"></label><label>終了日<input type="date" id="tkRangeTo" value="${to}" min="${b.min}" max="${b.max}"></label></div>
-    <button type="button" class="btn" id="tkRangeStart" onclick="tkRangeStartClick()">練習開始</button><div id="tkRangeMsg"></div>
+    <button type="button" class="btn" id="tkRangeStart" onclick="tkRangeStartClick()">練習開始</button><div id="tkRangeMsg"${tkUi.notice ? ' class="tk-done"' : ''}>${escapeHtml(tkUi.notice || '')}</div>
   </div></div>`;
 }
 function tkNoDataHtml(){ return `<div id="tkNoData">練習に使うローソク足が、この端末にまだありません。<br>☰ メニュー →「データ」→「Restore」で、PCで書き出したBackupを読み込んでください。</div>`; }
@@ -25230,7 +25300,7 @@ async function tkRangeStartClick(){
   if(!from){ say('開始日を選んでください'); return; }
   if(!to){ say('終了日を選んでください'); return; }
   if(from > to){ say('開始日が終了日より後です。開始日と終了日を確認してください'); return; }
-  say(''); tkUi.rangeFrom = from; tkUi.rangeTo = to; tkUi.starting = true;
+  say(''); tkUi.notice = ''; tkUi.rangeFrom = from; tkUi.rangeTo = to; tkUi.starting = true;
   try{
     await startReplaySessionForDate(from); // 既存の開始処理(市場・進捗・所感の関門を含む、PCと同じ経路)
     tkUi.rangeEnd = to;
@@ -25239,10 +25309,20 @@ async function tkRangeStartClick(){
 }
 // ---- チャート練習の画面 ----
 function tkPhaseOf(rs){ return (replayAnswerCheckEnabled() && !replayAnswerRevealed(rs)) ? 'answer' : 'next'; }
+// [v0.2] 練習範囲の最後の日か(この日の「次の日へ」が、期間選択画面へ戻る操作になる日): 範囲の分母(replaySession.dates)に、これより後の日が無い / 終了日に着いた / データの最後の日
+function tkIsLastDay(rs){
+  if(!rs) return false;
+  const ds = (replaySession && replaySession.dates) || [], idx = chartState.index, maxD = idx && idx.maxDate;
+  if(ds.length && !ds.some(d=> d > rs.sessionDate)) return true;
+  if(tkUi.rangeEnd && rs.sessionDate >= tkUi.rangeEnd) return true;
+  return !!(maxD && rs.sessionDate >= maxD);
+}
+const TK_ICON_HOLIDAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9.5 13.5l5 5M14.5 13.5l-5 5"/></svg>';
+const TK_ICON_ECON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 20V11h4v9zM10 20V4h4v16zM16 20v-6h4v6z"/></svg>';
 function tkPracticeHtml(){
-  const rs = replayState, ph = tkPhaseOf(rs);
+  const rs = replayState, ph = tkPhaseOf(rs), lastDay = ph==='next' && tkIsLastDay(rs), pr = k=> (tkUi.events===k || tkUi.evPeek===k) ? 'true' : 'false';
+  const icoAttr = k=> `onclick="tkEventsToggle('${k}')" onpointerdown="tkEventsDown('${k}')" onpointerup="tkEventsUp()" onpointercancel="tkEventsUp()" onpointerleave="tkEventsUp()" oncontextmenu="return false"`;
   return `<div id="tkPractice"${replayReviewLocked() ? ' data-answer-locked="1"' : ''}>
-    <div id="tkLeftRail"><button type="button" class="tk-rail-btn" id="tkBtnHoliday" onclick="tkEventsToggle('holiday')">休場</button><button type="button" class="tk-rail-btn" id="tkBtnEcon" onclick="tkEventsToggle('econ')">指標</button></div>
     <div id="tkChartCol">
       <div id="tkTopBar"><span id="replayCursorLabel">${replayCursorLabelText()}</span>${replaySessionChipHtml()}<div id="replayStatusPanel">${renderReplayStatusPanel()}</div></div>
       <div id="tkChartWrap">
@@ -25253,11 +25333,12 @@ function tkPracticeHtml(){
       </div>
     </div>
     <div id="tkControls">
+      <div id="tkIconRow"><span id="tkMenuSlot" aria-hidden="true"></span><button type="button" class="tk-ico" id="tkBtnHoliday" aria-label="休場" aria-pressed="${pr('holiday')}" title="休場(押している間 / ONの間、チャートに重ねて表示)" ${icoAttr('holiday')}>${TK_ICON_HOLIDAY}</button><button type="button" class="tk-ico" id="tkBtnEcon" aria-label="経済指標" aria-pressed="${pr('econ')}" title="経済指標(押している間 / ONの間、チャートに重ねて表示)" ${icoAttr('econ')}>${TK_ICON_ECON}</button></div>
       <label id="tkRedLine" class="tk-ctl"><input type="checkbox" id="replayRedLineModeChk" ${rs.redLineMode ? 'checked' : ''} ${replayRedLinesLocked() ? 'disabled' : ''} onchange="toggleReplayRedLineMode(this.checked)"><span>水平線モード</span></label>
       ${renderReplayEntryButtons()}
       <button type="button" class="btn ghost tk-ctl" id="tkBtnClose" onclick="tkClose()">決済</button>
       <button type="button" class="btn ghost tk-ctl" id="replayStepFwdBtn" onclick="tkStep()"${replayForwardUiAttrs('')}>進める</button>
-      <button type="button" class="btn tk-ctl" id="tkBtnPhase" data-phase="${ph}" onclick="tkPhaseClick()">${ph==='answer' ? '答え合わせ' : '次の日へ'}</button>
+      <button type="button" class="btn tk-ctl" id="tkBtnPhase" data-phase="${ph}"${lastDay ? ' data-last-day="1"' : ''} onclick="tkPhaseClick()">${ph==='answer' ? '答え合わせ' : (lastDay ? '練習終了' : '次の日へ')}</button>
     </div>
   </div>`;
 }
@@ -25270,6 +25351,7 @@ function tkStep(){
   const rs = replayState; if(!rs) return;
   if(!rs.obsLock && !replayForwardGateActive(rs)) tkNoObsLock(rs); // 水平線が0本の間は、確定もしない(PCと同じ Forward Gate が止める。開始状態のままにする)
   stepReplay(1);
+  tkEventsSync();
 }
 function tkClose(){
   const rs = replayState; if(!rs) return;
@@ -25283,11 +25365,58 @@ async function tkPhaseClick(){
     await replayAnswerCheck();
     if(replayState===rs && !replayAnswerRevealed(rs) && rs.notice && typeof showToast==='function') showToast(rs.notice);
   } else {
-    const ds = (replaySession && replaySession.dates) || [];
-    if(tkUi.rangeEnd && ds.length && !ds.some(d=> d > rs.sessionDate)){ if(typeof showToast==='function') showToast('練習範囲の最後です(終了日 '+tkUi.rangeEnd+')'); return; }
+    // [v0.2] 範囲の最後の日(または、これより先のデータが無い日)の「次の日へ」= 練習の終わり: この日を確定して、期間選択画面へ戻る(同じ画面に残らない・alertを出さない)
+    if(tkIsLastDay(rs)){ await tkLeaveToRange('end'); return; }
+    // 次の日(練習範囲の中)が、まだ読み込まれていない月にある時(月末の取引日 → 月初): 先にその月を読み込む(月を足すだけ。既存の足の位置は変わらない)。しないと、既存の replayNextDay が「これ以上、先のデータがありません」を出して、同じ画面に残る
+    const ds = (replaySession && replaySession.dates) || [], nxt = ds.find(d=> d > rs.sessionDate);
+    if(nxt && !chartState.loadedMonths.includes(nxt.slice(0,7))) await activateChartMonths([nxt.slice(0,7)]);
+    if(!chartState.candles.some(c=> c.date >= addDaysStr(rs.sessionDate, 1))){ await tkLeaveToRange('end'); return; } // 本当に、これより先のデータが無い(範囲の分母に無い): alertを出さずに戻る
     await replayNextDay();
   }
 }
+// ---- [v0.2] 期間選択画面(最初の画面)へ戻る: 練習の終わり(最終日の次の日へ)/ 「期間を選び直す」(☰) ----
+//   戻る前に、いまの日のRunを「次の日へ」と同じ入口(replayAutosaveFinalize)で確定して保存する。保存できなかった時は、戻らない(記録を失わない)。保有中のPositionがある時の「期間を選び直す」は、戻らない(PCの市場切替と同じ安全側)
+//   戻る操作そのものは、PCの「セッションをリセット」と同じ resetReplaySession(練習セッション = 進捗・経過時間も、ここで終わる)
+function tkRunSettled(rs){ // いまの日の練習が、失われない状態か: 完了で保存済み / Runを作る必要が無い(Entryなし・進めてもいない)
+  const run = replayPracticeFindRun(rs.practiceRunId);
+  if(run) return replayPracticeStatus(rs)==='SAVED' && replayPracticeIsDone(run);
+  return replayPracticeStatus(rs)==='EMPTY' && !replayNoTradeAdvanced(rs);
+}
+function tkReselectNeedsConfirm(rs){ // 確定しないと残らないもの(保存前・保存後の変更・進行中・Entryなしで進めた)があるか。replayMarketSwitchBlocker と同じ判定(保有中のPositionは、別に止める)
+  const st = replayPracticeStatus(rs);
+  if(st==='SAVED'){ const run = replayPracticeFindRun(rs.practiceRunId); return !(run && replayPracticeIsDone(run)); }
+  if(st==='EMPTY') return replayNoTradeAdvanced(rs);
+  return true;
+}
+async function tkLeaveToRange(kind){
+  const rs = replayState; if(!rs || tkUi.leaving) return false;
+  const say = t=> { if(typeof showToast==='function') showToast(t); };
+  if(kind==='reselect' && rs.positions && rs.positions.length){ say('保有中のポジションがあります。先に「決済」してから、期間を選び直してください'); return false; }
+  tkUi.leaving = true;
+  try{
+    stopReplayPlayback();
+    await replayAutosaveFinalize(kind==='end' ? 'range-end' : 'reselect');
+    if(replayState !== rs) return false;
+    if(!tkRunSettled(rs)){ say('この日の練習を保存できなかったため、戻りません'+(rs.notice ? '('+String(rs.notice).replace(/^⚠\s*/, '')+')' : '')); return false; }
+    tkEventsReset(); tkConfirmClose();
+    const a = tkUi.rangeFrom, b = tkUi.rangeEnd || tkUi.rangeTo;
+    tkUi.rangeEnd = ''; tkUi.notice = kind==='end' ? '練習範囲'+(a && b ? '('+a+' 〜 '+b+')' : '')+'を最後まで終えました。次の期間を選べます' : '';
+    resetReplaySession(); // 期間選択画面(replayStateが無い時のスマホの最初の画面)に戻る
+    return true;
+  } finally { tkUi.leaving = false; }
+}
+async function tkReselectClick(){
+  tkDrawerClose(); const rs = replayState; if(!rs) return;
+  if(rs.positions && rs.positions.length){ if(typeof showToast==='function') showToast('保有中のポジションがあります。先に「決済」してから、期間を選び直してください'); return; }
+  if(tkReselectNeedsConfirm(rs)){ tkConfirmShow({ title:'期間を選び直しますか？', text:'いまの練習('+rs.sessionDate+')を確定して保存し、期間の選択画面へ戻ります。', ok:'確定して戻る', cancel:'続ける', onOk:()=> tkLeaveToRange('reselect') }); return; }
+  await tkLeaveToRange('reselect');
+}
+function tkConfirmShow(o){
+  tkConfirmClose(); tkUi.confirm = o.onOk;
+  document.body.insertAdjacentHTML('beforeend', `<div id="tkConfirm" role="alertdialog" aria-modal="true"><div class="tk-cf-card"><div class="tk-cf-title">${escapeHtml(o.title)}</div><div class="tk-cf-text">${escapeHtml(o.text)}</div><div class="tk-cf-btns"><button type="button" class="btn ghost" id="tkConfirmCancel" onclick="tkConfirmClose()">${escapeHtml(o.cancel || 'キャンセル')}</button><button type="button" class="btn" id="tkConfirmOk" onclick="tkConfirmOk()">${escapeHtml(o.ok)}</button></div></div></div>`);
+}
+function tkConfirmClose(){ const e = document.getElementById('tkConfirm'); if(e) e.remove(); tkUi.confirm = null; }
+async function tkConfirmOk(){ const f = tkUi.confirm; tkConfirmClose(); if(f) await f(); }
 // 開始状態(まだ「進める」を押していない)の 買い/売り は、PCと同じく動かない。理由だけ、スマホの言葉で出す(PCの文言は所感・キーの説明を含むため)
 function tkOnClickCapture(ev){
   if(!tkIsMobile() || !replayState || replayState.obsLock) return;
@@ -25310,14 +25439,85 @@ function tkEventRows(kind){
     return ev.date.slice(5)+' '+ev.time+'　'+(ev.country || '')+'　'+(ev.event || '')+'　'+star+(has(ev.forecast) ? '予想 '+ev.forecast+'　' : '')+(has(ev.previous) ? '前回 '+ev.previous+'　' : '')+(has(ev.actual) ? '結果 '+ev.actual : '');
   });
 }
-function tkEventsToggle(kind){
-  const open = document.getElementById('tkEventsPanel');
-  if(open && open.getAttribute('data-kind')===kind){ tkEventsClose(); return; }
-  tkEventsClose(); if(!replayState) return;
-  const rows = tkEventRows(kind), w = tkEventsWindow(), title = (kind==='holiday' ? '休場' : '経済指標')+'(チャートに出ている範囲 '+w.lo.slice(5)+' 〜 '+w.hi.slice(5)+')';
-  document.body.insertAdjacentHTML('beforeend', `<div id="tkEventsPanel" data-kind="${kind}"><div class="tk-ev-head"><span class="tk-ev-title">${escapeHtml(title)}</span><button type="button" id="tkEventsClose" aria-label="閉じる" onclick="tkEventsClose()">✕</button></div><div class="tk-ev-body">${rows.length ? rows.map(t=> `<div class="tk-ev-row">${escapeHtml(t)}</div>`).join('') : '<div class="tk-ev-none">なし</div>'}</div></div>`);
+// [v0.2] 指標・休場: 左の常設ボタンは無し。右レールの小さなアイコンで、押した時だけチャートの上に重ねて見せる。
+//   タップ = ON / OFF(ONの間は出したまま・アイコンが点灯)。押し続ける(約0.35秒〜)= 押している間だけ表示(離すと消える。すでにONの種類は、そのまま)
+//   表示する中身(tkEventRows)・データ・判定は、v0.1と同じ(既存のCSV取込のデータ・replayEconView = Causal Frontier)。重ね表示は、チャートの操作・Replayの状態・Runに触れない
+const TK_EV_HOLD_MS = 350;
+function tkEventsShownKind(){ return tkUi.evPeek || tkUi.events || null; }
+function tkEventsSig(kind){ const w = tkEventsWindow(); return kind+'|'+w.lo+'|'+w.hi+'|'+w.cur; }
+function tkEventsFill(panel, kind){
+  const w = tkEventsWindow(), sig = tkEventsSig(kind); if(panel.getAttribute('data-sig')===sig) return;
+  const rows = tkEventRows(kind), title = (kind==='holiday' ? '休場' : '経済指標')+'(チャートに出ている範囲 '+w.lo.slice(5)+' 〜 '+w.hi.slice(5)+')', body = panel.querySelector('.tk-ev-body'), top = body ? body.scrollTop : 0;
+  panel.querySelector('.tk-ev-title').textContent = title;
+  if(body){ body.innerHTML = rows.length ? rows.map(t=> `<div class="tk-ev-row">${escapeHtml(t)}</div>`).join('') : '<div class="tk-ev-none">なし</div>'; body.scrollTop = top; }
+  panel.setAttribute('data-sig', sig);
 }
-function tkEventsClose(){ const e = document.getElementById('tkEventsPanel'); if(e) e.remove(); }
+function tkEventsSync(){
+  ['holiday', 'econ'].forEach(k=> { const b = document.getElementById(k==='holiday' ? 'tkBtnHoliday' : 'tkBtnEcon'); if(b) b.setAttribute('aria-pressed', (tkUi.events===k || tkUi.evPeek===k) ? 'true' : 'false'); });
+  const kind = tkEventsShownKind(), open = document.getElementById('tkEventsPanel');
+  if(!kind || !replayState){ if(open) open.remove(); return; }
+  const peek = tkUi.evPeek===kind && tkUi.events!==kind ? '1' : '0';
+  if(open && open.getAttribute('data-kind')===kind && open.getAttribute('data-peek')===peek){ tkEventsFill(open, kind); return; }
+  if(open) open.remove();
+  document.body.insertAdjacentHTML('beforeend', `<div id="tkEventsPanel" data-kind="${kind}" data-peek="${peek}"><div class="tk-ev-head"><span class="tk-ev-title"></span><button type="button" id="tkEventsClose" aria-label="閉じる" onclick="tkEventsClose()">✕</button></div><div class="tk-ev-body"></div></div>`);
+  tkEventsFill(document.getElementById('tkEventsPanel'), kind);
+}
+function tkEventsToggle(kind){
+  if(tkUi.evSuppressClick){ tkUi.evSuppressClick = false; return; } // 押し続けて離した直後のclickは、ON / OFFにしない
+  if(!replayState) return;
+  tkUi.events = (tkUi.events===kind) ? null : kind; tkUi.evPeek = null; tkEventsSync();
+}
+function tkEventsDown(kind){
+  clearTimeout(tkUi.evTimer); tkUi.evSuppressClick = false;
+  tkUi.evTimer = setTimeout(()=> { tkUi.evTimer = null; if(!replayState || tkUi.events===kind) return; tkUi.evPeek = kind; tkEventsSync(); }, TK_EV_HOLD_MS);
+}
+function tkEventsUp(){
+  clearTimeout(tkUi.evTimer); tkUi.evTimer = null;
+  if(tkUi.evPeek){ tkUi.evPeek = null; tkUi.evSuppressClick = true; setTimeout(()=> { tkUi.evSuppressClick = false; }, 400); tkEventsSync(); }
+}
+function tkEventsReset(){ clearTimeout(tkUi.evTimer); tkUi.evTimer = null; tkUi.events = null; tkUi.evPeek = null; const e = document.getElementById('tkEventsPanel'); if(e) e.remove(); }
+function tkEventsClose(){ tkEventsReset(); tkEventsSync(); }
+// ---- [v0.2] 5分足 / 1分足の境界(スマホだけ。1分足がONの間だけ存在)。上下のドラッグで、1分足ペインの高さを変える。比率は tkUi.m1Ratio(画面を開いている間だけ。OFF→ONで復元) ----
+//   操作の競合: 境界は、チャートのcanvasとは別の要素(pointer capture)。チャートのパン・水平線のドラッグは、canvasのtouch処理(tkTouchStart)だけが扱うので、境界の操作は届かない・境界から始めたドラッグは、canvasへ渡らない
+const TK_M1_MIN_H = 76, TK_M5_MIN_H = 110, TK_M1_DEFAULT_VH = 0.34, TK_SPLIT_NET = 4;
+function tkSplitterHtml(){ return `<div id="tkSplitter" role="separator" aria-orientation="horizontal" aria-label="5分足と1分足の境界(上下にドラッグして高さを変える)" tabindex="0" onpointerdown="tkSplitDown(event)" onpointermove="tkSplitMove(event)" onpointerup="tkSplitUp(event)" onpointercancel="tkSplitUp(event)" onkeydown="tkSplitKey(event)"></div>`; }
+function tkSplitMetrics(){
+  const wrap = document.getElementById('tkChartWrap'); if(!wrap) return null;
+  const H = wrap.clientHeight; if(!(H > 0)) return null;
+  const lo = TK_M1_MIN_H, hi = Math.max(lo, H - TK_SPLIT_NET - TK_M5_MIN_H);
+  return { wrap, H, lo, hi };
+}
+function tkSplitClamp(m, h){ return Math.round(Math.min(m.hi, Math.max(m.lo, h))); }
+function tkSplitApply(redraw){ // 比率 → 1分足ペインの高さ(px)。--tk-m1-h(CSS)に入れる。画面の大きさが変わっても、同じ比率を保つ
+  if(!tkIsMobile()) return null;
+  const m = tkSplitMetrics(); if(!m) return null;
+  const h = tkSplitClamp(m, (tkUi.m1Ratio != null ? tkUi.m1Ratio : TK_M1_DEFAULT_VH * window.innerHeight / m.H) * m.H);
+  document.documentElement.style.setProperty('--tk-m1-h', h+'px');
+  if(redraw && replayState && m1Pane.on.replay) drawReplayChart(); // 5分足の描画 → 1分足も描き直される(m1PaneInstall)
+  return h;
+}
+function tkSplitDown(ev){
+  const el = ev.currentTarget, m = tkSplitMetrics(), pane = m ? m.wrap.querySelector('[data-m1-pane="replay"]') : null; if(!m || !pane) return;
+  ev.preventDefault(); try{ el.setPointerCapture(ev.pointerId); }catch(e){}
+  tkUi.split = { id:ev.pointerId, y0:ev.clientY, h0:pane.getBoundingClientRect().height, raf:0 }; el.classList.add('tk-drag');
+}
+function tkSplitMove(ev){
+  const s = tkUi.split; if(!s || ev.pointerId !== s.id) return;
+  ev.preventDefault(); const m = tkSplitMetrics(); if(!m) return;
+  const h = tkSplitClamp(m, s.h0 - (ev.clientY - s.y0)); // 上へドラッグ = 1分足が高くなる
+  tkUi.m1Ratio = h / m.H; document.documentElement.style.setProperty('--tk-m1-h', h+'px');
+  if(!s.raf) s.raf = requestAnimationFrame(()=> { s.raf = 0; if(replayState) drawReplayChart(); });
+}
+function tkSplitUp(ev){
+  const s = tkUi.split; if(!s) return; tkUi.split = null;
+  const el = document.getElementById('tkSplitter'); if(el){ el.classList.remove('tk-drag'); try{ el.releasePointerCapture(ev.pointerId); }catch(e){} }
+  if(s.raf) cancelAnimationFrame(s.raf);
+  if(replayState) drawReplayChart();
+}
+function tkSplitKey(ev){ // 外付けキーボード用: ↑で1分足を高く / ↓で低く
+  if(ev.key!=='ArrowUp' && ev.key!=='ArrowDown') return; const m = tkSplitMetrics(), pane = m ? m.wrap.querySelector('[data-m1-pane="replay"]') : null; if(!m || !pane) return;
+  ev.preventDefault(); const h = tkSplitClamp(m, pane.getBoundingClientRect().height + (ev.key==='ArrowUp' ? 16 : -16)); tkUi.m1Ratio = h / m.H; tkSplitApply(true);
+}
 // ---- タッチ: 既存のマウス用の処理(パン・水平線の配置とドラッグ・1分足のパン)へ橋渡しする。ピンチ = 拡大縮小。ページはスクロール・ズームしない ----
 function tkCanvasKind(t){ return t && t.id==='replayCanvas' ? 'main' : (t && t.id==='replayM1Canvas' ? 'm1' : null); }
 function tkMouseEvent(type, cv, cx, cy){
@@ -25363,7 +25563,7 @@ function tkTouchEnd(ev){
   const p = ev.changedTouches[0] || { clientX:s.x0, clientY:s.y0 };
   s.cv.dispatchEvent(tkMouseEvent('mouseup', s.cv, p.clientX, p.clientY));
   if(!s.moved || replayRedLineDidDrag) s.cv.dispatchEvent(tkMouseEvent('click', s.cv, p.clientX, p.clientY)); // タップ = マウスのクリックと同じ(水平線の配置)。水平線のドラッグの後は、既存の「直前がドラッグ」の印を戻すため
-  tkUi.touch = null;
+  tkUi.touch = null; tkEventsSync(); // パン・ズームで、チャートに出ている範囲が変わった時は、重ね表示も合わせる
 }
 // ---- 描画の入口: PCでは元の関数をそのまま呼ぶ。スマホの時だけ、画面を差し替える ----
 function tkInstall(){
@@ -25377,6 +25577,9 @@ function tkInstall(){
     }; w.__tk = true; window.renderReplayView = w; } }
   { const o = window.renderReplayViewContent; if(typeof o==='function' && !o.__tk){ const w = function(){ return tkIsMobile() ? (replayState ? tkPracticeHtml() : '') : o.apply(this, arguments); }; w.__tk = true; window.renderReplayViewContent = w; } }
   { const o = window.render; if(typeof o==='function' && !o.__tk){ const w = function(){ const r = o.apply(this, arguments); try{ tkAfterRender(); }catch(e){ console.error('[Mobile]', e); } return r; }; w.__tk = true; window.render = w; } }
+  { const o = window.drawReplayChart; if(typeof o==='function' && !o.__tk){ const w = function(){ const r = o.apply(this, arguments); if(tkIsMobile() && tkEventsShownKind()){ try{ tkEventsSync(); }catch(e){ console.error('[Mobile]', e); } } return r; }; w.__tk = true; window.drawReplayChart = w; } } // 重ね表示は、チャートに出ている範囲に合わせる(範囲が同じ間は何もしない)
+  { const o = window.m1PaneSync; if(typeof o==='function' && !o.__tk){ const w = function(){ if(tkIsMobile()) tkSplitApply(false); return o.apply(this, arguments); }; w.__tk = true; window.m1PaneSync = w; } } // 1分足のON / OFF: 高さ(前回の比率)を先に入れてから描く
+  { const o = window.mountReplayPrototype; if(typeof o==='function' && !o.__tk){ const w = function(){ if(tkIsMobile()) tkSplitApply(false); return o.apply(this, arguments); }; w.__tk = true; window.mountReplayPrototype = w; } } // 画面の作り直し(次の日へ等)の後も、同じ比率
   document.addEventListener('click', tkOnClickCapture, true);
   document.addEventListener('touchstart', tkTouchStart, { passive:false, capture:true });
   document.addEventListener('touchmove', tkTouchMove, { passive:false, capture:true });
@@ -25386,6 +25589,7 @@ function tkInstall(){
   const onResize = ()=> { clearTimeout(tkUi.resizeTimer); tkUi.resizeTimer = setTimeout(()=> {
     const before = tkUi.orient; tkApply(false);
     if(tkIsMobile() && state.view==='replay' && replayState && tkUi.orient!==before && tkUi.orient==='landscape'){ try{ refreshReplayView(); }catch(e){} } // 縦 → 横: 画面の大きさが変わったので、チャートを描き直す
+    else if(tkIsMobile() && state.view==='replay' && replayState){ try{ tkSplitApply(true); }catch(e){} } // 大きさが変わった時: 5分足 / 1分足の比率を保つ
   }, 120); };
   window.addEventListener('resize', onResize); window.addEventListener('orientationchange', onResize);
 }
@@ -25393,7 +25597,7 @@ function tkAfterRender(){
   if(!tkIsMobile()) return;
   document.documentElement.setAttribute('data-tkview', state.view==='replay' ? (replayState ? 'replay-live' : 'replay-range') : String(state.view));
   if(tkUi.drawer) tkDrawerRefresh();
-  if(!replayState) tkEventsClose();
+  if(!replayState){ tkEventsReset(); tkConfirmClose(); } else { tkSplitApply(false); tkEventsSync(); }
 }
 tkInstall();
 tkApply(true);
