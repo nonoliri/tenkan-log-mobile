@@ -405,9 +405,9 @@
    - Backupのschema_version・Practice Runのversion・Analysis Packの build_id(replayAnalysisBuildId = コードのハッシュ)とは別物。これらには触れない・保存もしない(表示だけ)
    - build を更新するのは、HTMLを配布する人(リリースの度に build id を新しくする)
    ------------------------------------------------------------ */
-const APP_BUILD_INFO = Object.freeze({ version:'v0.2.1', build:'2026-10-15-01' });
-function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.2.1 · build 2026-10-15-01」
-function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.2.1」「Build: 2026-10-15-01」
+const APP_BUILD_INFO = Object.freeze({ version:'v0.2.2', build:'2026-10-16-01' });
+function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.2.2 · build 2026-10-16-01」
+function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.2.2」「Build: 2026-10-16-01」
 (function appBuildApply(){ const el = document.getElementById('appVersionBadge'); if(el) el.textContent = appBuildTextPc(); })(); // PC表示(スマホでは CSS で隠す)
 /* ============================================================
    軸(次元)ベースのラベル定義
@@ -25289,15 +25289,21 @@ mergeImportInstall();
    ------------------------------------------------------------ */
 var tkUi = { mode:'desktop', orient:'landscape', rangeFrom:'', rangeTo:'', rangeEnd:'', drawer:false, touch:null, starting:false, resizeTimer:null, installed:false,
   notice:'', leaving:false, confirm:null, events:null, evPeek:null, evTimer:null, evSuppressClick:false, m1Ratio:null, split:null }; // [v0.2] notice = 期間選択画面に出す一言 / events・evPeek = 指標・休場の重ね表示(ON・押している間) / m1Ratio = 1分足ペインの高さの割合(境界のドラッグ。画面を開いている間だけ)
-const TK_SHORT_ENTER = 500, TK_SHORT_LEAVE = 600, TK_PRACTICE_VIEWS = ['replay', 'quiz', 'ftoLog', 'chart']; // [2026-10-15] スマホで開ける画面。'chart' = ☰ → チャート(通常のChartタブ)
+const TK_SHORT_ENTER = 1024, TK_SHORT_LEAVE = 1100, TK_PRACTICE_VIEWS = ['replay', 'quiz', 'ftoLog', 'chart']; // [2026-10-15] スマホで開ける画面。'chart' = ☰ → チャート(通常のChartタブ)
 function tkIsMobile(){ return tkUi.mode==='mobile'; }
 function tkUiOverride(){ const m = /[?&]ui=(mobile|desktop)(&|$)/.exec(window.location.search || ''); return m ? m[1] : null; }
-// 画面の判定: 上書き > (タッチが主な操作 かつ 画面の短い辺が小さい)。一度スマホになったら、少し大きくなるまで(短い辺 600px まで)スマホのまま(ちらつき防止)
-//   短い辺は、表示領域(innerWidth / innerHeight)と、端末の画面(screen.width / height)の、小さい方。ページが横にはみ出すと、スマホのブラウザは表示領域を広げて縮小表示する(innerWidth が実際の画面より大きくなる)ため、表示領域だけで決めると、PC表示に切り替わってしまう
+// 画面の判定: 上書き(?ui=mobile / ?ui=desktop)> (タッチが主な操作 = 主なポインタが coarse かつ 画面の短い辺が 1024px 以下)。[2026-10-16 iPad対応] 以前は「短い辺 500px 以下」だったため、iPad(第5世代 = 1024×768)はPC表示に入っていた。
+//   幅だけでは決めない: マウスが主な操作のPC(pointer: fine)は、幅が 1024px 以下でも必ずPC表示のまま。iPhone・iPadなど「タッチが主な操作」の端末だけがスマホ表示(= Touch UI。iPhoneとiPadで同じ画面・同じ操作)になる。User-Agentは使わない(iPadOSのSafariはMacと同じUAを名乗るため)。
+//   一度スマホ表示になったら、短い辺が 1100px まで広がるまではそのまま(ちらつき防止)。短い辺は、表示領域(innerWidth / innerHeight)と、端末の画面(screen.width / height)の、小さい方。ページが横にはみ出すと、スマホのブラウザは表示領域を広げて縮小表示する(innerWidth が実際の画面より大きくなる)ため、表示領域だけで決めると、PC表示に切り替わってしまう
+function tkDecideMode(o){ // 判定だけの純粋な関数: o = { override: 'mobile' | 'desktop' | null, coarse: boolean, short: number, current: 'mobile' | 'desktop' }
+  if(o.override) return o.override;
+  if(!o.coarse) return 'desktop';
+  return (o.short <= (o.current==='mobile' ? TK_SHORT_LEAVE : TK_SHORT_ENTER)) ? 'mobile' : 'desktop';
+}
 function tkDetect(){
   const w = window.innerWidth, h = window.innerHeight, sc = window.screen || {}, scr = (sc.width > 0 && sc.height > 0) ? Math.min(sc.width, sc.height) : Infinity, short = Math.min(w, h, scr), ov = tkUiOverride(), mm = q=> !!(window.matchMedia && window.matchMedia(q).matches);
   const coarse = mm('(pointer: coarse)') || (!!navigator.maxTouchPoints && !mm('(pointer: fine)'));
-  const next = ov ? ov : (!coarse ? 'desktop' : ((short <= (tkUi.mode==='mobile' ? TK_SHORT_LEAVE : TK_SHORT_ENTER)) ? 'mobile' : 'desktop'));
+  const next = tkDecideMode({ override:ov, coarse, short, current:tkUi.mode });
   const orient = w >= h ? 'landscape' : 'portrait', flipped = next !== tkUi.mode, de = document.documentElement;
   tkUi.mode = next; tkUi.orient = orient; de.setAttribute('data-ui', next); de.setAttribute('data-orient', orient);
   if(next!=='mobile') de.removeAttribute('data-tkview');
