@@ -264,6 +264,39 @@
   body.case-review-active #arrowModeBtn, body.case-review-active #arrowModeHtfBtn, body.case-review-active #markerMoveModeBtn, body.case-review-active #chartDataSettingsBtn, body.case-review-active .chart-toolbar button[onclick^="openFtoIndicatorExport"], body.case-review-active .chart-toolbar button[onclick*="chartCsvInput"], body.case-review-active .chart-toolbar button[onclick^="setAutoDisplayMode"], body.case-review-active .chart-toolbar button[onclick^="setNewArrowColor"]{pointer-events:none;opacity:.35;}
   /* [答え合わせ] チャート練習のReview Mode中: Entry・決済・水平線・取引コストの操作を薄くして、押せなくする(見た目だけ。止めているのは、各操作の入口のHard Guard) */
   [data-answer-locked="1"] #replayEnterBuyBtn, [data-answer-locked="1"] #replayEnterSellBtn, [data-answer-locked="1"] #replayCloseAllWrap, [data-answer-locked="1"] .replay-pos button, [data-answer-locked="1"] #replayRedLineModeChk, [data-answer-locked="1"] #replayRedLineActions, [data-answer-locked="1"] #replayCostPanel select, [data-answer-locked="1"] #replayCostPanel input{pointer-events:none;opacity:.45;}
+  /* [Web v0.3 CSS] begin */
+  /* 「設定」タブ */
+  .web-settings{max-width:1100px;}
+  .web-settings h2{margin:0 0 14px;font-size:18px;}
+  .ws-sec{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+  .ws-sec h3{margin:0 0 10px;font-size:13px;color:var(--sub);font-weight:600;}
+  .ws-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
+  .ws-note{font-size:11px;color:var(--sub);line-height:1.5;}
+  .ws-radio{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;}
+  .ws-radio code{background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:12px;}
+  .ws-sec .chart-data-settings{margin:8px 0 0;background:var(--panel-2);}
+  /* チャートタブ: 5分足 ⇄ 1分足 のドラッグ分割ハンドル(5分足と1分足の間の8px。従来の余白と同じ高さ。当たり判定だけ上下へ広げる) */
+  .web-splitter{position:relative;height:8px;z-index:4;cursor:row-resize;touch-action:none;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none;}
+  .web-splitter::before{content:'';position:absolute;left:0;right:0;top:-5px;bottom:-5px;}
+  .web-splitter span{display:block;width:44px;height:4px;border-radius:2px;background:var(--line);opacity:.9;}
+  .web-splitter:hover span,.web-splitter.dragging span{background:var(--accent);}
+  @media (pointer:coarse){ .web-splitter::before{top:-14px;bottom:-14px;} .web-splitter span{width:56px;height:5px;} }
+  /* iPhone / iPad: 指標・休場アイコンを押している間の詳細表示。長押しメニュー・文字選択・タップの強調を止める(チャートのcanvasだけ) */
+  @media (pointer:coarse){ #chartCanvas,#replayCanvas,#quizCanvas,#replayM1Canvas,#chartM1Canvas,#quizM1Canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;} }
+  /* iPhone / iPad: 横画面の小さな案内(縦向きでチャート系の画面を開いている間だけ。横向きになれば消える) */
+  #webOrientHint{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:7000;display:flex;align-items:center;gap:4px;max-width:calc(100vw - 24px);padding:2px 4px 2px 14px;background:rgba(14,18,24,0.92);border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,0.4);}
+  #webOrientHint button{width:36px;height:36px;border:none;background:none;color:var(--sub);font-size:14px;cursor:pointer;}
+  /* ☰メニュー(スマホ / iPad)の見出し行: 練習時刻の表示形式(行の高さを増やさない) */
+  html[data-ui="mobile"] #tkDrawer .tk-clk{display:flex;align-items:center;gap:6px;margin:0 8px;min-width:0;}
+  html[data-ui="mobile"] #tkDrawer .tk-clk small{font-size:11px;color:var(--sub);white-space:nowrap;}
+  html[data-ui="mobile"] #tkDrawer .tk-clk .tk-opt{padding:0 10px;font-size:12.5px;}
+  html[data-ui="mobile"] #tkDrawer .tk-dhead #tkNav_settings{padding:0 12px;margin:0 6px 0 4px;}
+  /* スマホ / iPad(Touch UI)の設定画面: ボタンは44px以上 */
+  html[data-ui="mobile"] .web-settings .btn{min-height:44px;}
+  html[data-ui="mobile"] .web-settings .ws-radio{min-height:44px;}
+  /* Case Review / Step Replay 中: 設定タブのCSV読み込みも、従来のチャートタブのボタンと同じく押せなくする(#chartDataSettingsBtn は、IDで既に対象) */
+  body.case-review-active .web-settings button[onclick*="chartCsvInput"], body.step-replay-active .web-settings button[onclick*="chartCsvInput"]{pointer-events:none;opacity:.35;}
+  /* [Web v0.3 CSS] end */
   /* [Mobile v0.1 CSS] begin */
   /* スマホ(iPhone 16e の横画面)用の見た目。PC版には掛からない: 全てのセレクタが html[data-ui="mobile"] から始まる(JSが、画面の大きさ・タッチ・向きから data-ui を決める)。
      色は新しく決めない: 買い/売りは :root の --replay-buy / --replay-sell(PCと共通の1か所)。ここには色コードを書かない。 */
@@ -405,9 +438,9 @@
    - Backupのschema_version・Practice Runのversion・Analysis Packの build_id(replayAnalysisBuildId = コードのハッシュ)とは別物。これらには触れない・保存もしない(表示だけ)
    - build を更新するのは、HTMLを配布する人(リリースの度に build id を新しくする)
    ------------------------------------------------------------ */
-const APP_BUILD_INFO = Object.freeze({ version:'v0.2.2', build:'2026-10-16-01' });
-function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.2.2 · build 2026-10-16-01」
-function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.2.2」「Build: 2026-10-16-01」
+const APP_BUILD_INFO = Object.freeze({ version:'v0.3.0', build:'2026-10-17-01' });
+function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.0 · build 2026-10-17-01」
+function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.0」「Build: 2026-10-17-01」
 (function appBuildApply(){ const el = document.getElementById('appVersionBadge'); if(el) el.textContent = appBuildTextPc(); })(); // PC表示(スマホでは CSS で隠す)
 /* ============================================================
    軸(次元)ベースのラベル定義
@@ -1013,6 +1046,7 @@ async function load(){
   }catch(e){ state.replayPracticeRuns = []; }
   try{ const ob = await storageApi.get('replay_observations_v1', false); state.replayObservations = ob ? (JSON.parse(ob.value).versions || []) : []; }catch(e){ state.replayObservations = []; }
   try{ const od = await storageApi.get('replay_observation_drafts_v1', false); state.replayObservationDrafts = od ? (JSON.parse(od.value).drafts || {}) : {}; }catch(e){ state.replayObservationDrafts = {}; }
+  try{ await webPrefLoad(); }catch(e){} // [Web v0.3] 練習時刻の表示形式・5M/1M分割の比率(UI Preference。Backupには含めない)
   try{ await replayMarketPrefLoad(); }catch(e){} // [市場切替] 選択中の市場(UI Preference)。保存値が無い旧環境は EUROPE
   replayPracticeTouch(); // [表示性能] 集計cacheは、保存内容(正本)から作り直せるDerived。読み込みで内容が変わるので無効にする
   try{
@@ -3052,7 +3086,9 @@ async function buildReplaySessionForDate(baseDate){
   // baseDateの月(と前月)が、まだメモリに読み込まれていないことがあるため(チャートタブで別の月を見ていた場合など)、
   // 先に読み込んでおく。これをしないと、実際にはCSVにデータがある日でも「データなし」に見えてしまう
   await ensureCandleIndexLoaded();
-  await activateChartMonths([shiftMonthKey(baseDate.slice(0,7),-1), baseDate.slice(0,7)]);
+  // [月またぎ 2026-10-17] 練習は、開始から最大約25時間(5分足300本 / 1分足1500本)進む。読み込む月が「開始日の月まで」だと、月末の取引日(例: 8/31)は、月の最後の足(23:55。1分足は23:59)で、先へ進めなくなる。
+  //   開始日(週末なら、次の取引日へ丸める分 +2日、練習の長さ +2日 = +4日)が入る月まで読み込む。月は、実日時(addDaysStr = Date.UTC)で求める(「日付文字列に1を足す」ではない)。+4日が同じ月なら、従来と同じ(翌月は読み込まない)
+  await activateChartMonths([shiftMonthKey(baseDate.slice(0,7),-1), baseDate.slice(0,7), addDaysStr(baseDate, 4).slice(0,7)]);
   // baseDateに実際のローソク足が無い(週末・祝日、日付ピッカーで選ばれた場合など)ことがあるため、
   // まず実在する直近の取引日に丸めてから、その"実際の日付"を基準に夏時間/冬時間の開始時刻を計算する。
   // ここを飛ばして先にopenTimeを決めてしまうと、丸めた後の日付とは違う前提の時刻になってしまうことがある
@@ -3098,7 +3134,7 @@ async function buildReplaySessionForDate(baseDate){
     // 週末や祝日を挟むと「2日前」では取引時間が足りず、4時間足MTMA(10期間=約40時間分必要)が
     // 計算できないことがあるため、余裕を持って7日分(1週間)手前まで読み込む
     const warmupDate = addDaysStr(lookbackDate, -7);
-    const monthsNeeded = state1m.index.months.filter(m=> m>=warmupDate.slice(0,7) && m<=startDate.slice(0,7));
+    const monthsNeeded = state1m.index.months.filter(m=> m>=warmupDate.slice(0,7) && m<=addDaysStr(startDate, 4).slice(0,7)); // [月またぎ] 開始日の月まで → 練習が届く月(開始日 +4日)まで。月末(例: 8/31 23:59)で止まらない。金曜開始は、週末を飛ばして月曜(+3日)まで進むので、+2日では月曜が翌月1日の時に足りない(例: 金 5/29 → 月 6/1)。5分足側(baseDate +4日)と同じ
     for(const mk of monthsNeeded) await loadMonth1m(mk);
     const all1m = monthsNeeded.flatMap(m=> state1m.monthCache[m]||[]);
     const warmupPos = all1m.findIndex(c=> (c.date+' '+c.time) >= (warmupDate+' 00:00'));
@@ -3679,8 +3715,6 @@ function renderReplayViewContent(){
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${replayState.use1m?'rgba(77,182,172,0.18)':'rgba(255,183,77,0.18)'};color:${replayState.use1m?'#4DB6AC':'#FFB74D'};">${replayState.use1m ? '1分足モード(5分足を1分ごとに組み立てて表示)' : '5分足モード(1分足データ未読込のため5分足のまま)'}</span>
           <button class="btn ghost sm" onclick="replayZoomBy(1.3)" title="表示本数を増やす(チャートタブの－縮小と同じ)">－縮小</button><button class="btn ghost sm" onclick="replayZoomBy(0.75)" title="表示本数を減らす(チャートタブの＋拡大と同じ)">＋拡大</button>
           <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--sub);cursor:pointer;" title="10pips刻みの細い線を表示します。次の日(別のmarket_date)に進むと、自動でOFFに戻ります"><input type="checkbox" id="replayGrid10" ${(gridSyncReplayDate(), gridView.replay) ? 'checked' : ''} onchange="setReplayGrid10(this.checked)">10pips</label>
-          <button class="btn ghost sm" onclick="document.getElementById('replay1mCsvInput').click()">1分足CSVを読み込む</button>
-          <input type="file" id="replay1mCsvInput" accept=".csv,.txt" style="display:none" onchange="onReplay1mCsvFile(event)">
           <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--sub);cursor:pointer;" title="チャートタブで引いた矢印の場所に、方向は分からない目印だけを薄く表示します(補助輪)">
             <input type="checkbox" ${replayState.showArrowHints?'checked':''} onchange="toggleReplayArrowHints(this.checked)">
             補助輪(自分が引いた矢印の場所だけ薄く表示)
@@ -3748,7 +3782,7 @@ function replayBottomCardsHtml(){
 // リプレイ試作タブのトップレベル。CSV未読込/開始日付を選ぶ画面/準備完了の3状態を出し分ける
 function renderReplayView(){
   if(!chartState.candles.length){
-    return `<div style="padding:60px 20px;text-align:center;color:var(--sub);">まだCSVが読み込まれていません。チャートタブから読み込んでください。</div>`;
+    return `<div style="padding:60px 20px;text-align:center;color:var(--sub);">まだCSVが読み込まれていません。設定タブから読み込んでください。</div>`;
   }
   if(!replayState){
     const defaultDate = chartState.candles[chartState.rightIndex].date;
@@ -4654,7 +4688,7 @@ async function startQuiz(forceCount, mode, forceStopLossMode, forcePeriod){
 
     await ensureCandleIndexLoaded();
     if(!chartState.index){
-      alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。');
+      alert('まだCSVが読み込まれていません。設定タブから読み込んでください。');
       quizState = null;
       render();
       return;
@@ -4694,7 +4728,7 @@ async function startQuiz(forceCount, mode, forceStopLossMode, forcePeriod){
 
     await ensureCandleIndexLoaded();
     if(!chartState.index){
-      alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。');
+      alert('まだCSVが読み込まれていません。設定タブから読み込んでください。');
       quizState = null;
       render();
       return;
@@ -4731,7 +4765,7 @@ async function startQuiz(forceCount, mode, forceStopLossMode, forcePeriod){
 
     await ensureCandleIndexLoaded();
     if(!chartState.index){
-      alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。');
+      alert('まだCSVが読み込まれていません。設定タブから読み込んでください。');
       quizState = null;
       render();
       return;
@@ -4767,7 +4801,7 @@ async function startQuiz(forceCount, mode, forceStopLossMode, forcePeriod){
 
     await ensureCandleIndexLoaded();
     if(!chartState.index){
-      alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。');
+      alert('まだCSVが読み込まれていません。設定タブから読み込んでください。');
       quizState = null;
       render();
       return;
@@ -4815,7 +4849,7 @@ async function startQuiz(forceCount, mode, forceStopLossMode, forcePeriod){
 
   await ensureCandleIndexLoaded();
   if(!chartState.index){
-    alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。');
+    alert('まだCSVが読み込まれていません。設定タブから読み込んでください。');
     quizState = null;
     render();
     return;
@@ -5743,7 +5777,7 @@ async function mountGroupBoardCharts(){
   await ensureCandleIndexLoaded();
   if(myGeneration!==groupBoardThumbGeneration) return; // awaitの間にタブが切り替わっていたら何もしない
   if(!chartState.index){
-    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(チャートタブから読込)'));
+    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(設定タブから読込)'));
     perf.totalMs = performance.now()-tStart;
     return;
   }
@@ -6484,26 +6518,23 @@ function render(){
             <button id="experimentalTabBtn" class="${experimentalActive()?'active':''}" onclick="openExperimental()" title="思考ログ・理論収支・ナイアガラ検証(まだ実験段階の機能)">実験中</button>
           </div>
         </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="viewtoggle"><button id="settingsTabBtn" class="${state.view==='settings'?'active':''}" onclick="setView('settings')" title="CSV読み込み・インポート/エクスポート・経済指標/祝日のデータ設定・練習時刻の表示形式">⚙ 設定</button></div>
+        </div>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn ghost" onclick="resetAutoTags()" title="全レコードの自動タグ(自動欄)を、現在の矢印位置に基づいて再計算し直します。矢印を動かした後などに実行してください">自動タグを再設定</button>
-        <button class="btn ghost" onclick="exportAllData()">エクスポート</button>
-        <button class="btn ghost" onclick="document.getElementById('importFileInput').click()">インポート</button>
-        <input type="file" id="importFileInput" accept="application/json" style="display:none" onchange="importAllData(event)">
-        <button class="btn" onclick="openEditor(null)">+ 新規追加</button>
-        <div id="backupSlimNote" style="position:absolute;right:0;top:calc(100% + 2px);white-space:nowrap;font-size:10.5px;line-height:14px;color:var(--sub);pointer-events:none;">このバックアップはSlim形式です。古い転換ログではM5が完全復元されない場合があります。現在版で復元してください。</div>
-      </div>
+      <input type="file" id="importFileInput" accept="application/json" style="display:none" onchange="importAllData(event)">
     </header>
-    <div class="toolbar" style="${(state.view==='parent'||state.view==='patterns'||state.view==='dayPatterns'||state.view==='chart'||state.view==='replay'||state.view==='groupBoard'||state.view==='niagara'||state.view==='quiz'||state.view==='ftoLog'||state.view==='thinkingLog'||state.view==='tradeTheory')?'display:none':''}">
+    <div class="toolbar" style="${(state.view==='parent'||state.view==='patterns'||state.view==='dayPatterns'||state.view==='chart'||state.view==='replay'||state.view==='groupBoard'||state.view==='niagara'||state.view==='quiz'||state.view==='ftoLog'||state.view==='thinkingLog'||state.view==='tradeTheory'||state.view==='settings')?'display:none':''}">
       <input type="text" id="searchInput" placeholder="検索(日時・根拠名)" value="${state.search}" oninput="onSearchInput(this.value)" oncompositionstart="onSearchCompositionStart()" oncompositionend="onSearchCompositionEnd(this.value)">
       <select onchange="setDraftFilter(this.value)" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:7px 10px;border-radius:8px;font-size:13px;" title="Claudeが自動でタグを仮入力した「下書き」の表示を絞り込みます">
         <option value="all" ${state.draftFilter==='all'?'selected':''}>すべて</option>
         <option value="draftOnly" ${state.draftFilter==='draftOnly'?'selected':''}>📝 下書きのみ</option>
         <option value="nonDraftOnly" ${state.draftFilter==='nonDraftOnly'?'selected':''}>下書きを除く</option>
       </select>
+      <button class="btn" style="margin-left:auto;" onclick="openEditor(null)">+ 新規追加</button>
     </div>
     ${experimentalSubTabsHtml()}
-    ${state.view==='parent' ? renderParentView() : state.view==='patterns' ? renderPatternGroupsView() : state.view==='dayPatterns' ? renderDayPatternGroupsView() : state.view==='chart' ? renderChartView() : state.view==='replay' ? renderReplayView() : state.view==='groupBoard' ? renderGroupBoardView() : state.view==='niagara' ? renderNiagaraView() : state.view==='quiz' ? renderQuizView() : state.view==='ftoLog' ? renderPracticeLogView() : state.view==='thinkingLog' ? renderThinkingLogView() : state.view==='tradeTheory' ? renderTradeView() : `
+    ${state.view==='settings' ? renderSettingsView() : state.view==='parent' ? renderParentView() : state.view==='patterns' ? renderPatternGroupsView() : state.view==='dayPatterns' ? renderDayPatternGroupsView() : state.view==='chart' ? renderChartView() : state.view==='replay' ? renderReplayView() : state.view==='groupBoard' ? renderGroupBoardView() : state.view==='niagara' ? renderNiagaraView() : state.view==='quiz' ? renderQuizView() : state.view==='ftoLog' ? renderPracticeLogView() : state.view==='thinkingLog' ? renderThinkingLogView() : state.view==='tradeTheory' ? renderTradeView() : `
     <div class="layout">
       ${renderFilters()}
       <div id="resultArea">${renderResultArea()}</div>
@@ -7301,7 +7332,7 @@ async function refreshEditorChart(){
   if(!date) return;
   await ensureCandleIndexLoaded();
   if(!chartState.index){
-    drawImg2Empty(canvas, 'CSV未読込(チャートタブから読込)');
+    drawImg2Empty(canvas, 'CSV未読込(設定タブから読込)');
     editorChartLayout = null;
     return;
   }
@@ -7886,7 +7917,7 @@ async function refreshDayEditorChart(){
   if(!canvas || !editingDayDate) return;
   await ensureCandleIndexLoaded();
   if(!chartState.index){
-    drawImg2Empty(canvas, 'CSV未読込(チャートタブから読込)');
+    drawImg2Empty(canvas, 'CSV未読込(設定タブから読込)');
     dayEditorChartLayout = null;
     return;
   }
@@ -8486,7 +8517,7 @@ async function mountImg2Previews(){
   if(canvases.length===0) return;
   await ensureCandleIndexLoaded();
   if(!chartState.index){
-    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(チャートタブから読込)'));
+    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(設定タブから読込)'));
     return;
   }
   const months = new Set();
@@ -9215,7 +9246,7 @@ function drawFtoDayThumb(canvas, date, groups){
 }
 async function openImg2Zoom(date, id){
   await ensureCandleIndexLoaded();
-  if(!chartState.index){ alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。'); return; }
+  if(!chartState.index){ alert('まだCSVが読み込まれていません。設定タブから読み込んでください。'); return; }
   const monthKey = date.slice(0,7);
   await activateChartMonths([shiftMonthKey(monthKey,-1), monthKey]);
   const overlay = document.createElement('div');
@@ -9238,7 +9269,7 @@ async function openImg2Zoom(date, id){
 // FTO練習ログ用:1件のトレードを拡大表示する(チャートタブに移動せず、その場でモーダル表示)
 async function openFtoTradeZoom(date, groupKey){
   await ensureCandleIndexLoaded();
-  if(!chartState.index){ alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。'); return; }
+  if(!chartState.index){ alert('まだCSVが読み込まれていません。設定タブから読み込んでください。'); return; }
   const matching = state.ftoTrades.filter(t=> ftoGroupKey(t)===groupKey);
   if(matching.length===0){ alert('このトレードのデータが見つかりませんでした。'); return; }
   const group = groupFtoTradesForDisplay(matching)[0];
@@ -9265,7 +9296,7 @@ async function openFtoTradeZoom(date, groupKey){
 // FTO練習ログ用「一日単位」:その日の全ポジションを1枚に重ねて拡大表示する
 async function openFtoDayZoom(date, groupKeysCsv){
   await ensureCandleIndexLoaded();
-  if(!chartState.index){ alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。'); return; }
+  if(!chartState.index){ alert('まだCSVが読み込まれていません。設定タブから読み込んでください。'); return; }
   const groups = groupKeysCsv.split(',').map(k=>{
     const matching = state.ftoTrades.filter(t=> ftoGroupKey(t)===k);
     return matching.length ? groupFtoTradesForDisplay(matching)[0] : null;
@@ -9301,7 +9332,7 @@ function drawDayCardImg2Thumb(canvas, cardDate, selectedArrowId, showInd, dataBu
 // 同じ仕組み(cache-onlyのensureMonthsCached・IntersectionObserver・generation token)で処理する
 async function openDayImg2Zoom(cardDate){
   await ensureCandleIndexLoaded();
-  if(!chartState.index){ alert('まだCSVが読み込まれていません。チャートタブから読み込んでください。'); return; }
+  if(!chartState.index){ alert('まだCSVが読み込まれていません。設定タブから読み込んでください。'); return; }
   const monthKey = cardDate.slice(0,7);
   await activateChartMonths([shiftMonthKey(monthKey,-1), monthKey]);
   const overlay = document.createElement('div');
@@ -10285,7 +10316,7 @@ async function replayAnalysisPriceFor(marketDate, rd, market){
   };
   const idx = rd.idx1m;
   if(idx && idx.minDate && idx.minDate <= lookbackDate){ // リプレイ試作が1分足モードで動く条件(buildReplaySessionForDateと同じ)
-    const all1m = []; for(const m of idx.months.filter(m=> m>=warmupDate.slice(0,7) && m<=mk)) for(const c of await rd.month('1m', m)) all1m.push(c);
+    const all1m = []; for(const m of idx.months.filter(m=> m>=warmupDate.slice(0,7) && m<=addDaysStr(marketDate, 4).slice(0,7))) for(const c of await rd.month('1m', m)) all1m.push(c); // [月またぎ 2026-10-17] buildReplaySessionForDate の monthsNeeded と同じ範囲(+4日。金曜開始は月曜まで)(練習が月末をまたいで進めるので、価格データも同じ所まで)
     const startPos = all1m.findIndex(c=> key(c) >= lookbackKey);
     if(startPos>=0){
       const warmupPos = all1m.findIndex(c=> key(c) >= warmupKey), wPos = (warmupPos>=0 && warmupPos<startPos) ? warmupPos : startPos, beginPos = all1m.findIndex(c=> key(c) >= openKey);
@@ -10309,7 +10340,7 @@ async function replayAnalysisBuild(range){
       market_sessions:{ note:'各Runの market_session("EUROPE" | "NY"。項目が無い古いRunは EUROPE)で、どの市場の練習かを見分ける。開始時刻だけが市場で違い、Replayの仕組み(M1 step・Entry/Exit・PnL・Cost)は共通。価格データのキー(runs[].price_ref)は、EUROPE = 市場日 / NY = "市場日/NY"',
         EUROPE:{ replay_start_time:'夏15:00 / 冬16:00', replay_start_state:'14:55 / 15:55の5分足が確定した直後' },
         NY:{ replay_start_time:'夏21:00 / 冬22:00', replay_start_state:'20:55 / 21:55の5分足が確定した直後', dst:'isSummerDST(米国式DST。3月第2日曜〜11月第1日曜。Market Dateごと)', session_reference_lines:'読み取り専用の自動Reference(赤水平線 red_lines ではない)。MediumSeaGreen = 当日06:00〜20:55(夏)/21:55(冬)の5分足の実体(max(open,close) / min(open,close))の高値・安値(高値・安値とも同じ範囲)。Gold = 前日21:00(夏)/22:00(冬)〜当日05:55の5分足の実体の高値・安値。ただし月曜は、直近に完了したGold Session = 金曜21:00(夏)/22:00(冬)〜土曜05:55(日曜夜〜月曜朝は使わない。実在する足だけを使い、補間しない)。計算結果は書き出さない(価格は price_data に入る)' } },
-      replay_range:'開始時刻の足から、1,500本先(M5は300本先)まで。ただし、開始時刻の月のデータの終わりまで', price_rule:'Entry・決済の価格 = その時点のReplay cursorのM1の終値(spread・commission・slippageは、価格に含めない)', cost_model:'NONE (net_pips = gross_pips) または AXIORY_TERA_GBPUSD_V1。各Runの cost_model に記録(コスト項目が無い古いRunは NONE として読む)',
+      replay_range:'開始時刻の足から、1,500本先(M5は300本先)まで。ただし、保存先のデータの終わりまで(月末をまたいで進む)', price_rule:'Entry・決済の価格 = その時点のReplay cursorのM1の終値(spread・commission・slippageは、価格に含めない)', cost_model:'NONE (net_pips = gross_pips) または AXIORY_TERA_GBPUSD_V1。各Runの cost_model に記録(コスト項目が無い古いRunは NONE として読む)',
       cost_models:{ NONE:'コストなし。net_pips = gross_pips', AXIORY_TERA_GBPUSD_V1:{ formula:'net_pips = gross_pips − spread_cost_pips − commission_cost_pips(決済したPosition(closed Position)ごとに1回。保有中は対象外)', spread:'FIXED_SESSION: ユーザーがReplay Session(Run)ごとに入力(pips)。そのRunの全Positionに同じ値。spread_cost_pips = spread_pips', commission:'往復 $'+REPLAY_COST_AXIORY_SPEC.commission_roundtrip_usd_per_lot+' / standard lot ÷ GBPUSDのpip値 $'+REPLAY_COST_PIP_VALUE_USD_PER_LOT+'/pip = '+replayCostCommissionPips()+' pips / closed Position(Replayは数量を持たない: 1 Position = 1単位)', components:'gross_pips(価格の動き)・spread_cost_pips・commission_cost_pips は別の成分。Entry・決済の価格には含めない' } }, positions:'Q/Wで1つずつ独立したPositionとして追加(ナンピン可)。各Tradeは1つのPosition',
       analysis_context:{ definition:'Replay開始時点でチャートが参照できた過去の価格(リプレイ試作が、開始時点で実際に持っていた価格のバッファ)。BB・MA・MTMA・Swing・値動きの大きさ(Scale)などのBaselineを、開始時点の情報だけから再計算するために含める',
         start_rule:'表示の起点 = 開始時刻の5分足の100本前。その日付の7日前の0:00から(MTMA H4の10期間 ≒ 約40時間分などを、開始時点から計算できるため。週末・祝日を挟んでも足りる)。保存先のデータの始まりより前は、データの始まりから', no_future:'増えるのは、開始時刻より前の、すでに知ることができた価格だけ。未来の価格は増やしていない(開始時刻の足〜price_data_endは、Context追加前と同じ)',
@@ -11099,7 +11130,7 @@ const M1_PANE_IDS = {
   quiz:   { canvas:'quizM1Canvas',   slot:'quizM1Slot',   btn:'quizM1ToggleBtn' }
 };
 const M1_PANE_STYLE = { MAX_BARS:720, MAX_WIN:600, SLOT_MIN:12, SLOT_RATIO:0.25, PAD_L:2, PAD_T:6, PAD_B:18, MAX_GAP_MIN:5, MAX_AHEAD:360, CHART_RESERVE:270, UP:'#008080', DOWN:'#DC143C', RED:'#FF3B30', IND_WARM:2700 }; // IND_WARM = MA / BBの計算の助走(過去側の1分足の本数)。最長のMTMA 10MA(H4)= 4時間足10本 = 最大2,400本 + 進行中の足を含める。未来側には、1本も足さない
-const M1_PANE_NO_DATA = '1分足データが読み込まれていません(チャート練習の「1分足CSVを読み込む」から読み込めます)';
+const M1_PANE_NO_DATA = '1分足データが読み込まれていません(「設定」タブの「1分足CSVを読み込む」から読み込めます)';
 function m1Key(c){ return c.date+' '+c.time; }
 function m1KeyMin(k){ return String(k).slice(0,16); }
 function m1KeyToMs(k){ return Date.UTC(+k.slice(0,4), +k.slice(5,7)-1, +k.slice(8,10), +k.slice(11,13), +k.slice(14,16)); }
@@ -11138,8 +11169,8 @@ function m1PaneSlotInnerHtml(screen){
   if(!m1Pane.on[screen]) return ''; // OFF: 1分足のcanvasも、領域も、無い(従来と同じレイアウト)
   const id = M1_PANE_IDS[screen];
   const hdr = `<div style="display:flex;justify-content:space-between;align-items:center;height:16px;font-size:10.5px;color:var(--sub);padding:0 2px;"><span>1分足(Raw M1)</span><span id="${id.canvas}Info" data-m1-info="${screen}"></span></div>`;
-  const cv = `<canvas id="${id.canvas}" width="900" height="200" style="width:100%;${screen==='chart' ? 'height:230px;' : 'flex:1;min-height:0;'}display:block;border-radius:10px;background:#000;cursor:crosshair;"></canvas><div class="chart-tooltip" id="${id.canvas}Tip"></div>`;
-  if(screen === 'chart') return `<div class="chart-canvas-wrap" data-m1-pane="chart" style="margin-top:8px;padding:6px 8px;position:relative;">${hdr}${cv}</div>`;
+  const cv = `<canvas id="${id.canvas}" width="900" height="200" style="width:100%;${screen==='chart' ? 'height:'+webSplitM1Height()+'px;' : 'flex:1;min-height:0;'}display:block;border-radius:10px;background:#000;cursor:crosshair;"></canvas><div class="chart-tooltip" id="${id.canvas}Tip"></div>`;
+  if(screen === 'chart') return `${webSplitHandleHtml()}<div class="chart-canvas-wrap" data-m1-pane="chart" style="margin-top:0;padding:6px 8px;position:relative;">${hdr}${cv}</div>`; // [Web v0.3] 5分足との間の8px(従来はこの枠のmargin-top)を、ドラッグ用のハンドルに置き換えた(高さは同じ)
   return `${(screen==='replay' && typeof tkIsMobile==='function' && tkIsMobile()) ? tkSplitterHtml() : ''}<div data-m1-pane="${screen}" style="flex:0 0 auto;height:clamp(170px,34vh,340px);display:flex;flex-direction:column;margin-top:6px;position:relative;">${hdr}${cv}</div>`; // [スマホ v0.2] 5分足との境界(つまみ)は、スマホのチャート練習の時だけ。PCは従来のまま
 }
 function m1PaneSlotHtml(screen){ return `<div id="${M1_PANE_IDS[screen].slot}" style="${screen==='chart' ? '' : 'display:contents;'}">${m1PaneSlotInnerHtml(screen)}</div>`; }
@@ -11149,7 +11180,7 @@ function m1PanePillHtml(screen){ // 5分足の右上に重ねる開閉ボタン(
 function quizM1Html(){ // チャート問題集: 5分足の右上に開閉ボタン(重ねる)。1分足ペインは5分足のすぐ下
   return `${m1PanePillHtml('quiz')}${m1PaneSlotHtml('quiz')}`;
 }
-function m1PaneChartReserve(){ return (m1Pane.on.chart && document.getElementById(M1_PANE_IDS.chart.canvas)) ? M1_PANE_STYLE.CHART_RESERVE : 0; } // チャートタブ: 1分足ペインが開いている間だけ、5分足の高さを、その分だけ縮める(OFFは0 = 従来の高さ)
+function m1PaneChartReserve(){ if(!(m1Pane.on.chart && document.getElementById(M1_PANE_IDS.chart.canvas))){ webSplit.pair = 0; return 0; } webSplit.pair = webSplitPairH(); return webSplitM1Height() + WEB_SPLIT_CHROME(); } // チャートタブ: 1分足ペインが開いている間だけ、5分足の高さを、その分だけ縮める(OFFは0 = 従来の高さ)
 function m1PaneToggle(screen){
   if(!M1_PANE_IDS[screen]) return;
   m1Pane.on[screen] = !m1Pane.on[screen];
@@ -11167,10 +11198,10 @@ function m1PaneSync(screen){ // ボタンの文言と1分足の領域を、い�
   else if(screen === 'quiz'){ const c = document.getElementById('quizCanvas'); if(c) drawQuizChartNow(c); }
 }
 // ---- データ(Raw M1)とCausal Frontier ----
-function m1PaneStoreModel(anchorKey, screen){ // チャート / 問題集: Raw M1(state1m.monthCache)のうち、anchorKey以下だけ
+function m1PaneStoreModel(anchorKey, screen, futureBars){ // チャート / 問題集: Raw M1(state1m.monthCache)のうち、anchorKey以下だけ
   if(!state1m.indexLoaded){ ensureCandleIndex1mLoaded().then(()=> m1PaneRedraw(screen)); return { ok:false, message:'1分足を読み込み中…' }; }
   const ix = state1m.index; if(!ix || !ix.months || !ix.months.length) return { ok:false, message:M1_PANE_NO_DATA };
-  const mk = anchorKey.slice(0,7), prev = shiftMonthKey(mk, -1), want = [prev, mk].filter(m=> ix.months.includes(m));
+  const fut = screen === 'chart' && futureBars > 0, mk = anchorKey.slice(0,7), prev = shiftMonthKey(mk, -1), next = shiftMonthKey(mk, 1), want = (fut ? [prev, mk, next] : [prev, mk]).filter(m=> ix.months.includes(m)); // [Web v0.3] futureBars>0(チャートタブだけ)の時は、未来側のために翌月も読む
   if(!want.includes(mk)) return { ok:false, message:'この時刻の1分足データがありません' };
   const missing = want.filter(m=> !state1m.monthCache[m] && !m1Pane.tried[m]);
   if(missing.length){ missing.forEach(m=> m1Pane.tried[m] = true); Promise.all(missing.map(m=> loadMonth1m(m))).then(()=> m1PaneRedraw(screen)); return { ok:false, message:'1分足を読み込み中…' }; }
@@ -11181,11 +11212,16 @@ function m1PaneStoreModel(anchorKey, screen){ // チャート / 問題集: Raw M
   // MA / BBの計算に使うRaw M1: 表示する分(out)と同じ最後の足(anchorKey)まで + 計算の助走(過去側 IND_WARM本)。anchorKeyより先は、入れない。読み込む月は、上と同じ(前月 + 当月。MA / BBのために、新しく取得しない)
   const WIN = MAX + M1_PANE_STYLE.IND_WARM; let ic = cur.slice(Math.max(0, hi-WIN), hi);
   if(ic.length < WIN && want.includes(prev)){ const pv = (state1m.monthCache[prev] || []).filter(c=> m1Key(c) <= anchorKey); ic = pv.slice(Math.max(0, pv.length-(WIN-ic.length))).concat(ic); }
-  return { ok:true, candles:out, indicatorCandles:ic, frontierKey:anchorKey, anchorKey };
+  let frontierKey = anchorKey;
+  if(fut){ // [Web v0.3] チャートタブ: anchorKeyより先の、読み込み済みの1分足を futureBars 本まで足す(MA / BBの計算にも同じ足を渡す = 表示と計算の最後の足が同じ)
+    let fb = cur.slice(hi, hi+futureBars); if(fb.length < futureBars && want.includes(next)) fb = fb.concat((state1m.monthCache[next] || []).slice(0, futureBars-fb.length));
+    if(fb.length){ out = out.concat(fb); ic = ic.concat(fb); frontierKey = m1Key(fb[fb.length-1]); }
+  }
+  return { ok:true, candles:out, indicatorCandles:ic, frontierKey, anchorKey, future: fut };
 }
 function m1PaneModelReplay(){
   const rs = replayState; if(!rs) return { ok:false, message:'練習が始まっていません' };
-  if(!rs.use1m || !rs.oneMin) return { ok:false, message:'1分足データが読み込まれていません(いまは5分足モードです。「1分足CSVを読み込む」で読み込めます)' };
+  if(!rs.use1m || !rs.oneMin) return { ok:false, message:'1分足データが読み込まれていません(いまは5分足モードです。「設定」タブの「1分足CSVを読み込む」で読み込めます)' };
   const last = rs.cursor1mIdx, from = Math.max(0, last - M1_PANE_STYLE.MAX_BARS + 1);
   const candles = rs.oneMin.slice(from, last+1); // Causal Frontier: cursorまで。cursorより先のM1は、ここで渡さない
   const indicatorCandles = rs.oneMin.slice(Math.max(0, last - M1_PANE_STYLE.MAX_BARS - M1_PANE_STYLE.IND_WARM + 1), last+1); // MA / BB用: 同じくcursorまで + 助走(過去側)。cursorより先は、渡さない
@@ -11204,7 +11240,8 @@ function m1PaneArrowItems(m5, htf){
 function m1PaneModelChart(){
   const cd = chartState.candles[chartState.rightIndex]; if(!cd) return { ok:false, message:'5分足のデータがありません' };
   const anchorKey = m1AddMinutes(cd.date+' '+cd.time, 4); // 右端の5分足が終わる時刻(その5分足の最後の1分)まで。それより先の1分足は、5分足にも見えていない
-  const m = m1PaneStoreModel(anchorKey, 'chart'); if(!m.ok) return m;
+  const blindNow = (typeof caseReviewBlind === 'function') && caseReviewBlind(); // Case Review / Step Replay中は、未来の1分足を出さない(練習側の未来情報防止は、変えない)
+  const m = m1PaneStoreModel(anchorKey, 'chart', blindNow ? 0 : WEB_M1_CHART_FUTURE_BARS); if(!m.ok) return m;
   const V = chartState.visible, blind = (typeof caseReviewBlind === 'function') && caseReviewBlind(), auto = chartState.autoDisplayMode === 'auto';
   m.arrows = blind ? [] : m1PaneArrowItems(!!V.arrows && !auto, !!V.arrowsHtf && !auto); // 5分足と同じ表示条件。Case Review / Step Replay中は、出さない
   m.chartRefs = (!blind && chartState._nyRef) ? chartState._nyRef.refs : null; // NY Reference(5分足で算出した同じ4つの価格。M1から計算し直さない)。5分足と同じく Case Review中は出さない
@@ -11299,7 +11336,7 @@ function m1PaneRender(screen, canvas, model){
     if(cd.h > visMaxH) visMaxH = cd.h; if(cd.l < visMinL) visMinL = cd.l;
   }
   // ラインチャート(終値ライン): チャート練習の1分足ペインだけ。5分足と同じく、ローソク足の上・水平線の下
-  const lineCloseRec = (screen === 'replay') ? m1PaneDrawLineClose(ctx, cs, left, lastReal, idxToX, priceToY, dpr, { x:padL, y:padT, w:plotW, h:plotH }) : null;
+  const lineCloseRec = (screen === 'replay' || (screen === 'chart' && chartState.visible.lineClose)) ? m1PaneDrawLineClose(ctx, cs, left, lastReal, idxToX, priceToY, dpr, { x:padL, y:padT, w:plotW, h:plotH }) : null;
   // 水平線(5分足と同じデータ・同じ価格・同じ色)
   const lines = [];
   if(Array.isArray(model.redLines)){
@@ -11351,7 +11388,7 @@ function m1PaneRender(screen, canvas, model){
   }
   m1Pane.layout[screen] = lay;
   const lastKey = m1Key(cs[lastReal]);
-  if(info) info.textContent = lastKey.slice(5)+' まで(未来の1分足は表示しません)'+(hiddenRight ? ' / 右の外に矢印 '+hiddenRight+'本(左へドラッグで見えます)' : '');
+  if(info) info.textContent = lastKey.slice(5)+' まで('+(model.future ? '読み込み済みの1分足は、未来側も表示します' : '未来の1分足は表示しません')+')'+(hiddenRight ? ' / 右の外に矢印 '+hiddenRight+'本(左へドラッグで見えます)' : '');
   m1Pane.drawn[screen] = { screen, ok:true, count:lastReal-left+1, n, firstKey:m1Key(cs[left]), lastKey, frontierKey:fk, anchorKey:model.anchorKey, left, right, win:vp.win, nSlots:vp.nSlots, pan:vp.pan, minOffset:vp.minOffset, maxOffset:vp.maxOffset, hiddenRight,
     minP, maxP, cw, off, padL, padT, plotH, axisX, cssWidth, cssHeight, visMaxH, visMinL, lines, arrows, highlights:hl, trades, current_price:cur, pips_bar:pips, breakeven:be, gold_lines:goldRec, ref_lines:refRec, time_guides:guideRec, indicators:indRec, line_close:lineCloseRec };
 }
@@ -11359,6 +11396,7 @@ function m1PaneRedraw(screen){
   if(!m1Pane.on[screen]) return;
   const id = M1_PANE_IDS[screen], canvas = document.getElementById(id.canvas); if(!canvas) return;
   if(!canvas.__m1Bound){ m1PaneBind(screen, canvas); canvas.__m1Bound = true; }
+  if(screen === 'chart') webSplitSyncCanvas(canvas); // [Web v0.3] 5分足 / 1分足の分割(ウィンドウのリサイズ・復元した比率)を、描く前に1分足のcanvasへ反映
   const model = screen === 'replay' ? m1PaneModelReplay() : screen === 'chart' ? m1PaneModelChart() : m1PaneModelQuiz();
   m1PaneRender(screen, canvas, model);
 }
@@ -11926,7 +11964,7 @@ async function mountFtoLogThumbs(){
   if(canvases.length===0) return;
   await ensureCandleIndexLoaded();
   if(!chartState.index){
-    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(チャートタブから読込)'));
+    canvases.forEach(cv=> drawImg2Empty(cv, 'CSV未読込(設定タブから読込)'));
     return;
   }
   const months = new Set();
@@ -18315,12 +18353,13 @@ function drawPriceGrid(ctx, minP, maxP, padL, padR, cssWidth, priceToY){
 }
 // 1時間ごとの縦点線(白・点線・背景レイヤー)の線スタイル。PC = 従来の値。[スマホ v0.2] 実機で薄すぎたため、スマホだけ1段階(線の太さ 0.5 → 1 デバイスpx・不透明度 0.18 → 0.24)。色(白)・線種(点線)・描画順(ローソク足より背面)・Gold縦線との違いは同じ
 const HOUR_GRID_STYLE = { color:'rgba(255,255,255,0.18)', devicePx:0.5, dash:[1,3] };
+const HOUR_GRID_STYLE_PC = { color:'rgba(255,255,255,0.34)', devicePx:1, dash:[1,3] }; // [Web v0.3] PC(WEB)のチャートタブ(drawChartの本体だけ): 0.5デバイスpx・不透明度0.18ではほぼ見えなかったため、MT4の薄いグレーの点線に近づけた(1デバイスpx・不透明度0.34。ローソク足・MA / BBより背面のまま。1時間単位・白・点線は同じ)
 const HOUR_GRID_STYLE_MOBILE = { color:'rgba(255,255,255,0.24)', devicePx:1, dash:[1,3] };
-function hourGridStyle(){ return (typeof tkIsMobile==='function' && tkIsMobile()) ? HOUR_GRID_STYLE_MOBILE : HOUR_GRID_STYLE; }
+function hourGridStyle(chartTab){ return (typeof tkIsMobile==='function' && tkIsMobile()) ? HOUR_GRID_STYLE_MOBILE : (chartTab === true ? HOUR_GRID_STYLE_PC : HOUR_GRID_STYLE); } // [Web v0.3] PC: チャートタブの本体(drawChart。chartTab=true)だけ MT4に近い見え方(HOUR_GRID_STYLE_PC)。チャート練習・問題集・サムネイル・プレビュー(drawImg2Core)は、従来(HOUR_GRID_STYLE)のまま
 // CustomTimeGrid: 時間軸の縦点線+時刻ラベル(毎正時)。showLabels=falseでラベルなし(小さいプレビュー用)
-function drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, labelY, showLabels){
+function drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, labelY, showLabels, chartTab){
   if(showLabels===undefined) showLabels = true;
-  const hg = hourGridStyle();
+  const hg = hourGridStyle(chartTab === true); // [Web v0.3] チャートタブの本体だけ true
   ctx.setLineDash(hg.dash);
   ctx.lineWidth = hg.devicePx/(window.devicePixelRatio||1);
   // 1時間(=5分足12本)あたりの実際の表示幅に収まるよう、フォントサイズを自動計算する
@@ -18379,7 +18418,7 @@ function drawChart(){
   // 異常な高さにならないよう、ウィンドウ高さの2倍を上限にクランプしておく
   const mob = (typeof tkIsMobile==='function' && tkIsMobile()); // [2026-10-15] スマホのチャート(☰ → チャート): 画面の残りいっぱい(高さの下限・下の余白は小さく。1分足ペインは出さない)。PCは従来どおり
   const m1Rsv = mob ? 0 : m1PaneChartReserve(); // [1分足ペイン] 開いている間だけ、その分だけ高さを譲る(閉じている間は0 = 従来と同じ高さ)
-  const cssHeight = Math.min(window.innerHeight*2, Math.max(mob ? 150 : (m1Rsv ? 280 : 400), window.innerHeight - wrapTop - (mob ? 14 : 40) - m1Rsv));
+  const cssHeight = Math.min(window.innerHeight*2, Math.max(mob ? 150 : (m1Rsv ? webSplitMin5() : 400), window.innerHeight - wrapTop - (mob ? 14 : 40) - m1Rsv));
   const dpr = window.devicePixelRatio || 1;
   canvas.width = cssWidth*dpr;
   canvas.height = cssHeight*dpr;
@@ -18422,7 +18461,7 @@ function drawChart(){
   // ---- CustomTimeGrid(価格グリッド+時間グリッド) ----
   if(V.timeGrid){
     drawPriceGrid(ctx, minP, maxP, padL, padR, cssWidth, priceToY);
-    drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, hourLabelY);
+    drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, hourLabelY, true, true); // [Web v0.3] 最後の true = チャートタブの本体(PCの1時間線を、MT4に近い見え方にする)
   } else {
     // グリッド非表示時も最低限の目盛りは出す
     ctx.strokeStyle = 'rgba(255,255,255,0.06)';
@@ -23164,10 +23203,6 @@ function renderChartView(){
     ${caseReviewBarHtml()}
     <div class="chart-toolbar">
       <div class="grp">
-        <button class="btn ghost sm" onclick="document.getElementById('chartCsvInput').click()" ${chartState.importing?'disabled':''}>ローソク足CSVを読み込む</button>
-        <input type="file" id="chartCsvInput" accept=".csv,.txt" style="display:none" onchange="onChartCsvFile(event)">
-      </div>
-      <div class="grp">
         <label>日付</label>
         <button type="button" class="btn ghost sm" id="chartDateInputBtn" onclick="openMiniCalendar(event,'chartDateInput')">📅 ${chartState.lastDate||'日付を選択'}</button>
         <input type="hidden" id="chartDateInput" value="${chartState.lastDate||''}">
@@ -23204,7 +23239,6 @@ function renderChartView(){
       </div>
       ${renderTradeOverlayModeGroupHtml()}
       <div class="grp">
-        <button id="chartDataSettingsBtn" class="btn ghost sm" onclick="toggleChartDataSettings()">⚙ 経済指標・祝日のデータ設定 ${chartState.showDataSettings?'▲':'▼'}</button>
         <button id="chartLegendBtn" class="btn ghost sm" onclick="toggleChartLegend()">📊 インジケータ表示切替 ${chartState.showLegend?'▲':'▼'}</button>
         ${thinkingToggleHtml()}
       </div>
@@ -23212,119 +23246,13 @@ function renderChartView(){
     </div>
     ${renderTradeOverlayPanelHtml()}
     ${mlbtPanelHtml()}
-    <div class="chart-data-settings" id="chartDataSettings" style="display:${chartState.showDataSettings?'block':'none'};">
-      <div class="chart-data-settings-col">
-        <div class="chart-data-settings-title">経済指標(みんかぶ)</div>
-        <button class="btn ghost sm" onclick="document.getElementById('econCsvInput').click()" title="date,time,country,countryLabel,event,importance の列を持つCSV(forecast,previous,actualは任意)">CSVを読み込む</button>
-        <input type="file" id="econCsvInput" accept=".csv,.txt" style="display:none" onchange="onEconCsvFile(event)">
-        <button class="btn ghost sm" onclick="openEconEventManager()">手入力/編集</button>
-        <button class="btn ghost sm" onclick="importEconFromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
-        <button class="btn ghost sm" onclick="openGithubUrlSetting()" title="経済指標CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
-      </div>
-      <div class="chart-data-settings-col">
-        <div class="chart-data-settings-title">経済指標(MQL5)</div>
-        <button class="btn ghost sm" onclick="document.getElementById('mql5CsvInput').click()" title="date,time,country,countryLabel,event の列を持つCSV(forecast,previous,actualは任意)">CSVを読み込む</button>
-        <input type="file" id="mql5CsvInput" accept=".csv,.txt" style="display:none" onchange="onMql5CsvFile(event)">
-        <button class="btn ghost sm" onclick="importMql5FromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
-        <button class="btn ghost sm" onclick="openMql5GithubUrlSetting()" title="経済指標CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
-      </div>
-      <div class="chart-data-settings-col">
-        <div class="chart-data-settings-title">祝日</div>
-        <button class="btn ghost sm" onclick="document.getElementById('holidayCsvInput').click()" title="date,country,countryLabel,name の列を持つCSV">CSVを読み込む</button>
-        <input type="file" id="holidayCsvInput" accept=".csv,.txt" style="display:none" onchange="onHolidayCsvFile(event)">
-        <button class="btn ghost sm" onclick="importHolidaysFromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
-        <button class="btn ghost sm" onclick="openHolidaysGithubUrlSetting()" title="祝日CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:220px;">
-        <div class="chart-data-settings-title">矢印の自動判定</div>
-        <label style="font-size:11px;color:var(--sub);">評価する足数(起点から先)
-          <input type="number" min="1" value="${state.arrowEvalWindowCandles}" onchange="setArrowEvalWindow(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <label style="font-size:11px;color:var(--sub);margin-top:6px;">🟢即反発とみなす逆行の浅さ(pips以内)
-          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.quickReboundMaxAdverse}" onchange="setArrowClassifyThreshold('quickReboundMaxAdverse', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <label style="font-size:11px;color:var(--sub);">🟡🟠立ち回りで救えるとみなす逆行の上限(pips)
-          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.rescueMaxAdverse}" onchange="setArrowClassifyThreshold('rescueMaxAdverse', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <label style="font-size:11px;color:var(--sub);">成功とみなす順行のライン(pips以上)
-          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.successMinFav}" onchange="setArrowClassifyThreshold('successMinFav', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        ${(()=>{
-          const s = suggestArrowThresholds(3);
-          if(!s) return `<div style="font-size:10.5px;color:var(--sub);margin-top:4px;">参考値を出すにはデータが足りません(直近3ヶ月で成功した矢印が5件以上必要)</div>`;
-          return `<div style="font-size:10.5px;color:var(--sub);margin-top:4px;">直近${s.monthsBack}ヶ月・成功した矢印${s.count}件の逆行幅:中央値${s.median}pips / 上位25%ライン${s.p75}pips(参考値・自動反映はしません)</div>`;
-        })()}
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">テーブルタブの「矢印の自動判定」列に反映されます。基準はいつでも変更でき、過去データはその場で再計算されます。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:200px;">
-        <div class="chart-data-settings-title">ジグザグ(試作)</div>
-        <label style="font-size:11px;color:var(--sub);">スイング確定の閾値(pips)
-          <input type="number" step="0.5" min="0.5" value="${state.zigzagThresholdPips}" onchange="setZigzagThreshold(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">この幅だけ逆行して初めて、高値/安値をスイングとして確定します。①パターン種類・ダウ理論の質を将来自動判定するための土台の試作です。凡例からON/OFFできます。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:220px;">
-        <div class="chart-data-settings-title">AUTO PINK(自動判定・試作)</div>
-        <label style="font-size:11px;color:var(--sub);">FAILURE/NON_FAILUREの同値許容幅(pips)
-          <input type="number" step="0.5" min="0" value="${state.autoPinkEqualTolerancePips}" onchange="setAutoPinkEqualTolerance(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">Break側のpivot(SELLはH2、BUYはL2)が、その前のpivot(SELLはH1、BUYはL1)からこの幅以内ならFAILURE型、超えていればNON_FAILURE型として、AUTO PINKの詳細欄に表示します(PINKの成立条件そのものには影響しません)。丸の塗りつぶし=NON_FAILURE、輪郭のみ=FAILURE、薄い色=後からINVALIDATED。ホバーで詳細(structure_time/detectable_time)を確認できます。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:240px;">
-        <div class="chart-data-settings-title">Research/Debug: 複数Swing粒度の比較</div>
-        <label style="font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;">
-          <input type="checkbox" ${state.autoPinkResearchEnabled?'checked':''} onchange="toggleAutoPinkResearchMode()"> ON(同一CSVへ複数のSwing閾値を並行適用する)
-        </label>
-        <label style="font-size:11px;color:var(--sub);margin-top:6px;display:block;">比較するSwing閾値(pips、カンマ区切り)
-          <input type="text" value="${(state.autoPinkResearchScalesPips||[0,10,20]).join(',')}" onchange="setAutoPinkResearchScales(this.value)" ${state.autoPinkResearchEnabled?'':'disabled'} style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">高値安値の切り方(Swing閾値)を変えると、AUTO PINKの位置がどう変わるかを比較する試作機能です。PINK判定ロジックそのものは既存のまま、Swing検出の粒度だけを変えて同じロジックを適用します。ONの間、チャートには複数粒度で一致した候補を1つへcluster(合意数を丸の右肩に表示)して重ねて描画します。各Swingの生pivotそのものは凡例の「自動判定・波の高安」をONにするとDebug表示できます。手動PINKとの不一致理由(Swing segmentationかPINK条件か)は、ブラウザのコンソールで<code>debugDiagnoseManualAutoMismatch()</code>を実行すると一覧できます。</div>
-        <label style="font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;margin-top:8px;">
-          <input type="checkbox" ${state.showSwingAmplitudeDebugPanel?'checked':''} onchange="toggleSwingAmplitudeDebugPanel()" ${state.autoPinkResearchEnabled?'':'disabled'}> Swing振幅time series(Fine/Medium/Coarse)をチャート下部に表示
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">各scaleの「直近確定Swing振幅・最新pivot時刻」を、今チャートに表示中の範囲について並べるだけのDebug表示です。scaleの自動選択・条件化は一切行いません(raw値のみ)。コンソールでは<code>debugSwingAmplitudeTimeSeries('2026-08-28')</code>で任意の日の一覧を、<code>debugPinkCoverageByScale()</code>で手動PINKごとの一致scaleを時系列一覧できます。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:260px;">
-        <div class="chart-data-settings-title">相対的な市場粒度(試作・観測専用)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <label style="font-size:10.5px;color:var(--sub);">rolling range/body: 短期(本)
-            <input type="number" min="1" step="1" value="${state.granularityWindowParams.shortRangeBars}" onchange="setGranularityWindowParams({shortRangeBars: parseInt(this.value,10)||12})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
-          </label>
-          <label style="font-size:10.5px;color:var(--sub);">rolling range/body: 長期(本)
-            <input type="number" min="1" step="1" value="${state.granularityWindowParams.longRangeBars}" onchange="setGranularityWindowParams({longRangeBars: parseInt(this.value,10)||48})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
-          </label>
-          <label style="font-size:10.5px;color:var(--sub);">Fine swing: recent件数
-            <input type="number" min="1" step="1" value="${state.granularityWindowParams.recentSwingCount}" onchange="setGranularityWindowParams({recentSwingCount: parseInt(this.value,10)||5})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
-          </label>
-          <label style="font-size:10.5px;color:var(--sub);">Fine swing: baseline件数
-            <input type="number" min="1" step="1" value="${state.granularityWindowParams.baselineSwingCount}" onchange="setGranularityWindowParams({baselineSwingCount: parseInt(this.value,10)||20})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
-          </label>
-        </div>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">固定10/20pipsのSwing閾値そのものではなく、「直近の値動きが、その銘柄自身の最近の履歴と比べて大きいか小さいか」をrolling medianの比率(candle_range_ratio・swing_amplitude_ratio)で見るだけの観測用パラメータです。scaleの自動選択・売買Permissionには一切接続しません。コンソールで<code>debugMarketGranularity('2026-08-28')</code>、または<code>debugGranularityCase('2026-08-28')</code>の4つ目の表として確認できます。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:220px;">
-        <div class="chart-data-settings-title">フェイラー/ノンフェイラーの自動判定</div>
-        <label style="font-size:11px;color:var(--sub);">ノンフェイラーとみなす順行の大きさ(pips以上)
-          <input type="number" step="0.5" min="0.5" value="${state.nonfailMinSwingPips}" onchange="setNonfailMinSwing(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">反発後、この幅以上「矢印の自動判定」の順行pipsが出ればノンフェイラースイング(+粒度が大きくなった)、届かなければフェイラースイング(+粒度が小さくなった)として、新規矢印の①パターン種類・ダウ理論に下書きします。</div>
-      </div>
-      <div class="chart-data-settings-col" style="min-width:220px;">
-        <div class="chart-data-settings-title">区間タグ(反対勢力)の自動判定</div>
-        <label style="font-size:11px;color:var(--sub);">一貫していたとみなす割合(0〜1)
-          <input type="number" step="0.05" min="0.05" max="1" value="${state.intervalConsistencyThreshold}" onchange="setIntervalConsistencyThreshold(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
-        </label>
-        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">「前回の転換点→今回の転換点」の区間全体のうち、この割合以上、反対勢力側(MA)・PO崩れの状態が続いていたら、反対勢力タグを付けます。矢印を動かすと、区間(前回矢印の位置)も自動で追従します。</div>
-      </div>
-      ${mlbtToggleHtml()}
-    </div>
     <div class="chart-legend" id="chartLegend" style="display:${chartState.showLegend?'flex':'none'};">${renderChartLegend()}</div>
     ${thinkingDockHtml()}
     <div class="chart-canvas-wrap" id="chartCanvasWrap">
       ${m1PanePillHtml('chart')}
       <div class="chart-empty" id="chartEmptyMsg" style="display:none">
         まだGBPUSDの5分足データが読み込まれていません。<br>
-        上の「ローソク足CSVを読み込む」から MT4/MT5 でエクスポートしたCSV(タブ区切り、DATE/TIME/OPEN/HIGH/LOW/CLOSE...)を選択してください。<br>
+        「設定」タブの「ローソク足CSVを読み込む」から MT4/MT5 でエクスポートしたCSV(タブ区切り、DATE/TIME/OPEN/HIGH/LOW/CLOSE...)を選択してください。<br>
         一度読み込めば、次回以降は自動で保存済みデータが使われます(数十MBのCSVでも、月単位に分けて保存するので問題ありません)。
       </div>
       <canvas id="chartCanvas" height="520" style="display:none"></canvas>
@@ -25277,6 +25205,383 @@ function mergeImportInstall(){
 }
 mergeImportInstall();
 
+/* [Web v0.3 JS] begin */
+/* ====================================================================================================
+   Web v0.3(2026-10-17): 「設定」タブ新設 / チャート表示の改善 / 練習時刻表示 / iPhone・iPadのアイコンtouch-hold
+   - このブロックは「追加」だけ。保護関数・Replayの判定・Run lifecycle・Backup形式・同期(未着手)には触れない
+   - UI Preference(練習時刻表示の形式・5M/1M分割の比率)は専用キーに保存し、Backupには含めない(replay_market_pref_v1 と同じ方式)
+   ==================================================================================================== */
+const WEB_CLOCK_PREF_KEY = 'replay_clock_pref_v1';
+const WEB_SPLIT_PREF_KEY = 'chart_split_pref_v1';
+const webPref = { clockMode: 'time', splitRatio: null, loaded: false }; // clockMode: 'time'(B: 01:00。既定) / 'datetime'(A: 2026/12/12 01:00)
+async function webPrefLoad(){ // 保存先から1回だけ読む(無い・壊れている → 既定値)
+  try{ const r = await storageApi.get(WEB_CLOCK_PREF_KEY, false), o = r && r.value ? JSON.parse(r.value) : null; webPref.clockMode = (o && o.mode === 'datetime') ? 'datetime' : 'time'; }catch(e){ webPref.clockMode = 'time'; }
+  try{ const r = await storageApi.get(WEB_SPLIT_PREF_KEY, false), o = r && r.value ? JSON.parse(r.value) : null; const v = o && Number(o.ratio); webPref.splitRatio = (isFinite(v) && v > 0 && v < 1) ? v : null; }catch(e){ webPref.splitRatio = null; }
+  webPref.loaded = true;
+}
+function webPrefSave(key, obj){ try{ return Promise.resolve(storageApi.set(key, JSON.stringify(obj), false)).catch(()=>{}); }catch(e){ return Promise.resolve(); } }
+
+/* ---- 「設定」タブ ----
+   置き場所を移しただけ。各ボタンの機能(onclick先)・input#id・保存先は、元の場所のものと同じ。
+   経済指標・祝日のデータ設定のパネルは、チャートタブにあったHTMLをそのまま chartDataSettingsPanelHtml() へ移したもの(開閉は従来どおり toggleChartDataSettings) */
+function webClockModeSet(mode){
+  webPref.clockMode = (mode === 'datetime') ? 'datetime' : 'time';
+  webPrefSave(WEB_CLOCK_PREF_KEY, { v:1, mode: webPref.clockMode });
+  if(typeof webClockRefresh === 'function') webClockRefresh();
+}
+function renderSettingsView(){
+  const radio = (v, tag, label, sample, note)=> `<label class="ws-radio"><input type="radio" name="wsClockMode" value="${v}" ${webPref.clockMode===v?'checked':''} onchange="webClockModeSet(this.value)"><span><b>${tag}</b> ${label} <code>${sample}</code>${note?` <span class="ws-note">${note}</span>`:''}</span></label>`;
+  return `
+    <div class="web-settings" id="webSettings">
+      <h2>⚙ 設定</h2>
+      <section class="ws-sec" data-ws="data">
+        <h3>データ(バックアップ)</h3>
+        <div class="ws-row">
+          <button class="btn ghost" onclick="document.getElementById('importFileInput').click()" title="バックアップ(JSON)を読み込んで復元します">インポート</button>
+          <button class="btn ghost" onclick="exportAllData()" title="全データをバックアップ(JSON)として書き出します">エクスポート</button>
+        </div>
+        <div id="backupSlimNote" class="ws-note">このバックアップはSlim形式です。古い転換ログではM5が完全復元されない場合があります。現在版で復元してください。</div>
+        <div class="ws-row" style="margin-top:10px;">
+          <button class="btn ghost" onclick="resetAutoTags()" title="全レコードの自動タグ(自動欄)を、現在の矢印位置に基づいて再計算し直します。矢印を動かした後などに実行してください">自動タグを再設定</button>
+        </div>
+      </section>
+      <section class="ws-sec" data-ws="chartdata">
+        <h3>チャートデータ</h3>
+        <div class="ws-row">
+          <button class="btn ghost" onclick="document.getElementById('chartCsvInput').click()" ${chartState.importing?'disabled':''}>ローソク足CSVを読み込む</button>
+          <input type="file" id="chartCsvInput" accept=".csv,.txt" style="display:none" onchange="onChartCsvFile(event)">
+          <button class="btn ghost" onclick="document.getElementById('replay1mCsvInput').click()">1分足CSVを読み込む</button>
+          <input type="file" id="replay1mCsvInput" accept=".csv,.txt" style="display:none" onchange="onReplay1mCsvFile(event)">
+        </div>
+        <div class="chart-status" id="chartStatus" style="margin-left:0;text-align:left;">${chartStatusText()}</div>
+        <div class="ws-row" style="margin-top:10px;">
+          <button id="chartDataSettingsBtn" class="btn ghost" onclick="toggleChartDataSettings()">⚙ 経済指標・祝日のデータ設定 ${chartState.showDataSettings?'▲':'▼'}</button>
+        </div>
+        ${chartDataSettingsPanelHtml()}
+      </section>
+      <section class="ws-sec" data-ws="practice">
+        <h3>チャート練習</h3>
+        <div class="ws-note" style="margin-bottom:6px;">練習中、いま見ている足の時刻をチャートの右側に常に表示します(練習の時間基準 = 欧州/NYの市場日どおり)。表示形式を選べます。</div>
+        <div class="ws-row" role="radiogroup" aria-label="練習時刻の表示形式" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          ${radio('time', 'B', '時刻のみ', '01:00', '(初期値)')}
+          ${radio('datetime', 'A', '日付 + 時刻', '2026/12/12 01:00', '')}
+        </div>
+      </section>
+    </div>
+  `;
+}
+/* 経済指標・祝日のデータ設定パネル。チャートタブのrenderChartView内にあったHTMLを、そのまま移した(中身は変更なし。開閉は toggleChartDataSettings) */
+function chartDataSettingsPanelHtml(){
+  return `
+    <div class="chart-data-settings" id="chartDataSettings" style="display:${chartState.showDataSettings?'block':'none'};">
+      <div class="chart-data-settings-col">
+        <div class="chart-data-settings-title">経済指標(みんかぶ)</div>
+        <button class="btn ghost sm" onclick="document.getElementById('econCsvInput').click()" title="date,time,country,countryLabel,event,importance の列を持つCSV(forecast,previous,actualは任意)">CSVを読み込む</button>
+        <input type="file" id="econCsvInput" accept=".csv,.txt" style="display:none" onchange="onEconCsvFile(event)">
+        <button class="btn ghost sm" onclick="openEconEventManager()">手入力/編集</button>
+        <button class="btn ghost sm" onclick="importEconFromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
+        <button class="btn ghost sm" onclick="openGithubUrlSetting()" title="経済指標CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
+      </div>
+      <div class="chart-data-settings-col">
+        <div class="chart-data-settings-title">経済指標(MQL5)</div>
+        <button class="btn ghost sm" onclick="document.getElementById('mql5CsvInput').click()" title="date,time,country,countryLabel,event の列を持つCSV(forecast,previous,actualは任意)">CSVを読み込む</button>
+        <input type="file" id="mql5CsvInput" accept=".csv,.txt" style="display:none" onchange="onMql5CsvFile(event)">
+        <button class="btn ghost sm" onclick="importMql5FromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
+        <button class="btn ghost sm" onclick="openMql5GithubUrlSetting()" title="経済指標CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
+      </div>
+      <div class="chart-data-settings-col">
+        <div class="chart-data-settings-title">祝日</div>
+        <button class="btn ghost sm" onclick="document.getElementById('holidayCsvInput').click()" title="date,country,countryLabel,name の列を持つCSV">CSVを読み込む</button>
+        <input type="file" id="holidayCsvInput" accept=".csv,.txt" style="display:none" onchange="onHolidayCsvFile(event)">
+        <button class="btn ghost sm" onclick="importHolidaysFromGithub()" title="設定したGitHubのCSV URLから最新データを取り込みます">GitHubから自動取得</button>
+        <button class="btn ghost sm" onclick="openHolidaysGithubUrlSetting()" title="祝日CSVのGitHub Raw URLを設定します">⚙ URL設定</button>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:220px;">
+        <div class="chart-data-settings-title">矢印の自動判定</div>
+        <label style="font-size:11px;color:var(--sub);">評価する足数(起点から先)
+          <input type="number" min="1" value="${state.arrowEvalWindowCandles}" onchange="setArrowEvalWindow(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <label style="font-size:11px;color:var(--sub);margin-top:6px;">🟢即反発とみなす逆行の浅さ(pips以内)
+          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.quickReboundMaxAdverse}" onchange="setArrowClassifyThreshold('quickReboundMaxAdverse', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <label style="font-size:11px;color:var(--sub);">🟡🟠立ち回りで救えるとみなす逆行の上限(pips)
+          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.rescueMaxAdverse}" onchange="setArrowClassifyThreshold('rescueMaxAdverse', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <label style="font-size:11px;color:var(--sub);">成功とみなす順行のライン(pips以上)
+          <input type="number" step="0.5" value="${state.arrowClassifyThresholds.successMinFav}" onchange="setArrowClassifyThreshold('successMinFav', this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        ${(()=>{
+          const s = suggestArrowThresholds(3);
+          if(!s) return `<div style="font-size:10.5px;color:var(--sub);margin-top:4px;">参考値を出すにはデータが足りません(直近3ヶ月で成功した矢印が5件以上必要)</div>`;
+          return `<div style="font-size:10.5px;color:var(--sub);margin-top:4px;">直近${s.monthsBack}ヶ月・成功した矢印${s.count}件の逆行幅:中央値${s.median}pips / 上位25%ライン${s.p75}pips(参考値・自動反映はしません)</div>`;
+        })()}
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">テーブルタブの「矢印の自動判定」列に反映されます。基準はいつでも変更でき、過去データはその場で再計算されます。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:200px;">
+        <div class="chart-data-settings-title">ジグザグ(試作)</div>
+        <label style="font-size:11px;color:var(--sub);">スイング確定の閾値(pips)
+          <input type="number" step="0.5" min="0.5" value="${state.zigzagThresholdPips}" onchange="setZigzagThreshold(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">この幅だけ逆行して初めて、高値/安値をスイングとして確定します。①パターン種類・ダウ理論の質を将来自動判定するための土台の試作です。凡例からON/OFFできます。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:220px;">
+        <div class="chart-data-settings-title">AUTO PINK(自動判定・試作)</div>
+        <label style="font-size:11px;color:var(--sub);">FAILURE/NON_FAILUREの同値許容幅(pips)
+          <input type="number" step="0.5" min="0" value="${state.autoPinkEqualTolerancePips}" onchange="setAutoPinkEqualTolerance(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">Break側のpivot(SELLはH2、BUYはL2)が、その前のpivot(SELLはH1、BUYはL1)からこの幅以内ならFAILURE型、超えていればNON_FAILURE型として、AUTO PINKの詳細欄に表示します(PINKの成立条件そのものには影響しません)。丸の塗りつぶし=NON_FAILURE、輪郭のみ=FAILURE、薄い色=後からINVALIDATED。ホバーで詳細(structure_time/detectable_time)を確認できます。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:240px;">
+        <div class="chart-data-settings-title">Research/Debug: 複数Swing粒度の比較</div>
+        <label style="font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" ${state.autoPinkResearchEnabled?'checked':''} onchange="toggleAutoPinkResearchMode()"> ON(同一CSVへ複数のSwing閾値を並行適用する)
+        </label>
+        <label style="font-size:11px;color:var(--sub);margin-top:6px;display:block;">比較するSwing閾値(pips、カンマ区切り)
+          <input type="text" value="${(state.autoPinkResearchScalesPips||[0,10,20]).join(',')}" onchange="setAutoPinkResearchScales(this.value)" ${state.autoPinkResearchEnabled?'':'disabled'} style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">高値安値の切り方(Swing閾値)を変えると、AUTO PINKの位置がどう変わるかを比較する試作機能です。PINK判定ロジックそのものは既存のまま、Swing検出の粒度だけを変えて同じロジックを適用します。ONの間、チャートには複数粒度で一致した候補を1つへcluster(合意数を丸の右肩に表示)して重ねて描画します。各Swingの生pivotそのものは凡例の「自動判定・波の高安」をONにするとDebug表示できます。手動PINKとの不一致理由(Swing segmentationかPINK条件か)は、ブラウザのコンソールで<code>debugDiagnoseManualAutoMismatch()</code>を実行すると一覧できます。</div>
+        <label style="font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;margin-top:8px;">
+          <input type="checkbox" ${state.showSwingAmplitudeDebugPanel?'checked':''} onchange="toggleSwingAmplitudeDebugPanel()" ${state.autoPinkResearchEnabled?'':'disabled'}> Swing振幅time series(Fine/Medium/Coarse)をチャート下部に表示
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">各scaleの「直近確定Swing振幅・最新pivot時刻」を、今チャートに表示中の範囲について並べるだけのDebug表示です。scaleの自動選択・条件化は一切行いません(raw値のみ)。コンソールでは<code>debugSwingAmplitudeTimeSeries('2026-08-28')</code>で任意の日の一覧を、<code>debugPinkCoverageByScale()</code>で手動PINKごとの一致scaleを時系列一覧できます。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:260px;">
+        <div class="chart-data-settings-title">相対的な市場粒度(試作・観測専用)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <label style="font-size:10.5px;color:var(--sub);">rolling range/body: 短期(本)
+            <input type="number" min="1" step="1" value="${state.granularityWindowParams.shortRangeBars}" onchange="setGranularityWindowParams({shortRangeBars: parseInt(this.value,10)||12})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
+          </label>
+          <label style="font-size:10.5px;color:var(--sub);">rolling range/body: 長期(本)
+            <input type="number" min="1" step="1" value="${state.granularityWindowParams.longRangeBars}" onchange="setGranularityWindowParams({longRangeBars: parseInt(this.value,10)||48})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
+          </label>
+          <label style="font-size:10.5px;color:var(--sub);">Fine swing: recent件数
+            <input type="number" min="1" step="1" value="${state.granularityWindowParams.recentSwingCount}" onchange="setGranularityWindowParams({recentSwingCount: parseInt(this.value,10)||5})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
+          </label>
+          <label style="font-size:10.5px;color:var(--sub);">Fine swing: baseline件数
+            <input type="number" min="1" step="1" value="${state.granularityWindowParams.baselineSwingCount}" onchange="setGranularityWindowParams({baselineSwingCount: parseInt(this.value,10)||20})" style="display:block;margin-top:2px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:4px 6px;border-radius:6px;">
+          </label>
+        </div>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">固定10/20pipsのSwing閾値そのものではなく、「直近の値動きが、その銘柄自身の最近の履歴と比べて大きいか小さいか」をrolling medianの比率(candle_range_ratio・swing_amplitude_ratio)で見るだけの観測用パラメータです。scaleの自動選択・売買Permissionには一切接続しません。コンソールで<code>debugMarketGranularity('2026-08-28')</code>、または<code>debugGranularityCase('2026-08-28')</code>の4つ目の表として確認できます。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:220px;">
+        <div class="chart-data-settings-title">フェイラー/ノンフェイラーの自動判定</div>
+        <label style="font-size:11px;color:var(--sub);">ノンフェイラーとみなす順行の大きさ(pips以上)
+          <input type="number" step="0.5" min="0.5" value="${state.nonfailMinSwingPips}" onchange="setNonfailMinSwing(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">反発後、この幅以上「矢印の自動判定」の順行pipsが出ればノンフェイラースイング(+粒度が大きくなった)、届かなければフェイラースイング(+粒度が小さくなった)として、新規矢印の①パターン種類・ダウ理論に下書きします。</div>
+      </div>
+      <div class="chart-data-settings-col" style="min-width:220px;">
+        <div class="chart-data-settings-title">区間タグ(反対勢力)の自動判定</div>
+        <label style="font-size:11px;color:var(--sub);">一貫していたとみなす割合(0〜1)
+          <input type="number" step="0.05" min="0.05" max="1" value="${state.intervalConsistencyThreshold}" onchange="setIntervalConsistencyThreshold(this.value)" style="display:block;margin-top:4px;width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:6px;">
+        </label>
+        <div style="font-size:10.5px;color:var(--sub);margin-top:4px;">「前回の転換点→今回の転換点」の区間全体のうち、この割合以上、反対勢力側(MA)・PO崩れの状態が続いていたら、反対勢力タグを付けます。矢印を動かすと、区間(前回矢印の位置)も自動で追従します。</div>
+      </div>
+      ${mlbtToggleHtml()}
+    </div>
+  `;
+}
+/* ---- チャートタブ: 5分足 ⇄ 1分足 の高さ(ドラッグで調整) ----
+   - 境界のハンドル(#chartSplitter)を上下にドラッグ。Pointer Events なので、マウス(PC)・タッチ(iPhone / iPad)・ペンが同じ処理
+   - 5分足の高さ = 画面の残り - 1分足の高さ(m1PaneChartReserve 経由で drawChart が使う。drawChart 自体の計算式は変えていない)
+   - 比率(5分足が占める割合)は、この端末のUI Preference(chart_split_pref_v1)に保存。Backupには含めない。ダブルクリックで従来の高さへ戻す
+   - 比率が無い(既定)の間は、従来と同じ高さ(1分足のcanvas 230px)。最低の高さ: 5分足 200px / 1分足 90px(片側がほぼ消えない) */
+const WEB_M1_CHART_FUTURE_BARS = 720; // チャートタブの1分足: 5分足の右端より先へ表示する、読み込み済みの1分足の本数(12時間分。それ以上先は、5分足を動かすと追従する)
+const WEB_SPLIT_BASE_M1 = 230, WEB_SPLIT_MIN5 = 200, WEB_SPLIT_MIN1 = 90;
+const webSplit = { drag: null, pair: 0 }; // pair = 直前の drawChart(m1PaneChartReserve)で測った、5分足 + 1分足に使える高さの合計(スクロールで1分足の描き直しだけが高さを変えないよう、使い回す。1分足が閉じている間は 0)
+function WEB_SPLIT_CHROME(){ return M1_PANE_STYLE.CHART_RESERVE - WEB_SPLIT_BASE_M1; } // 1分足ペインの見出し・余白(canvas以外)の高さ
+function webSplitPairH(){ // 5分足のcanvas + 1分足のcanvas に使える高さの合計(drawChart の計算と同じ基準)
+  const wrap = document.getElementById('chartCanvasWrap'), top = wrap ? wrap.getBoundingClientRect().top : 0;
+  const avail = Math.min(window.innerHeight*2, window.innerHeight - top - 40);
+  return Math.max(WEB_SPLIT_MIN5 + WEB_SPLIT_MIN1, avail - WEB_SPLIT_CHROME());
+}
+function webSplitM1Height(){ // 1分足canvasの高さ(px)。比率が無い間は従来の230px
+  if(webPref.splitRatio == null) return WEB_SPLIT_BASE_M1;
+  const pair = webSplit.pair > 0 ? webSplit.pair : webSplitPairH(), m5 = Math.round(pair*webPref.splitRatio);
+  return Math.max(WEB_SPLIT_MIN1, Math.min(pair - WEB_SPLIT_MIN5, pair - m5));
+}
+function webSplitMin5(){ return webPref.splitRatio == null ? 280 : WEB_SPLIT_MIN5; } // 比率が無い間の5分足の最低高さは従来(280)のまま
+function webSplitHandleHtml(){
+  return `<div id="chartSplitter" class="web-splitter" role="separator" aria-orientation="horizontal" aria-label="5分足と1分足の高さ" title="上下にドラッグして、5分足と1分足の高さを調整(ダブルクリックで元の高さへ)" onpointerdown="webSplitDown(event)" ondblclick="webSplitReset()"><span></span></div>`;
+}
+function webSplitSyncCanvas(canvas){ const h = webSplitM1Height()+'px'; if(canvas && canvas.style.height !== h) canvas.style.height = h; }
+function webSplitApply(){
+  const cv = document.getElementById(M1_PANE_IDS.chart.canvas); if(!cv) return;
+  webSplitSyncCanvas(cv);
+  drawChart(); // 5分足の高さを更新(m1PaneChartReserve)。1分足は、drawChartの後ろに付いた m1Pane の描き直しで描く
+}
+function webSplitDown(ev){
+  if(ev.pointerType === 'mouse' && ev.button !== 0) return;
+  const cv = document.getElementById(M1_PANE_IDS.chart.canvas), el = ev.currentTarget; if(!cv || !el) return;
+  ev.preventDefault();
+  webSplit.drag = { id: ev.pointerId, y0: ev.clientY, m1H0: cv.clientHeight || webSplitM1Height(), pair: webSplitPairH(), raf: 0, moved: false };
+  try{ el.setPointerCapture(ev.pointerId); }catch(e){}
+  el.classList.add('dragging'); el.onpointermove = webSplitMove; el.onpointerup = webSplitUp; el.onpointercancel = webSplitUp;
+}
+function webSplitMove(ev){
+  const d = webSplit.drag; if(!d || ev.pointerId !== d.id) return;
+  const m1H = Math.max(WEB_SPLIT_MIN1, Math.min(d.pair - WEB_SPLIT_MIN5, Math.round(d.m1H0 - (ev.clientY - d.y0)))); // ハンドルを下へ = 5分足が大きく・1分足が小さく
+  webPref.splitRatio = (d.pair - m1H) / d.pair; d.moved = true;
+  if(!d.raf) d.raf = requestAnimationFrame(()=>{ d.raf = 0; webSplitApply(); }); // 連続するmoveは、1フレームに1回の描き直しにまとめる
+}
+function webSplitUp(ev){
+  const d = webSplit.drag; if(!d || (ev && ev.pointerId != null && ev.pointerId !== d.id)) return;
+  webSplit.drag = null; if(d.raf) cancelAnimationFrame(d.raf);
+  const el = document.getElementById('chartSplitter'); if(el){ el.classList.remove('dragging'); el.onpointermove = el.onpointerup = el.onpointercancel = null; try{ el.releasePointerCapture(d.id); }catch(e){} }
+  if(d.moved){ webSplitApply(); webPrefSave(WEB_SPLIT_PREF_KEY, { v:1, ratio: webPref.splitRatio }); } // 離した時に1回だけ保存(次回も維持)
+}
+function webSplitReset(){ webPref.splitRatio = null; webPrefSave(WEB_SPLIT_PREF_KEY, { v:1, ratio: null }); webSplitApply(); }
+/* ---- チャート練習: 現在の練習時刻を、最後のローソク足の右・現在価格のすぐ上に常時表示(MT4のライブ足の時刻ラベルと同じ位置関係) ----
+   - 表示専用。Replayの判定・cursor・Run・保存・Causal Frontier には、何も書かない・何も変えない(replayCurrentCandle() を読むだけ)
+   - 時刻 = いまの練習カーソルが指している足(1分足モード = 1分足 / 5分足モード = 5分足)の date / time そのもの = アプリの練習時刻と同じ基準(欧州/NYの市場日)。日付またぎは、足自身の日付なので、そのまま正しい
+   - 形式(設定タブ): B「01:00」(既定) / A「2026/12/12 01:00」。変えた瞬間に描き直す
+   - 描き方: ローソク足の右の空き(未来スロット)へ。現在価格の線のすぐ上(線を隠さない)。20pipsバーの手前で止める(入りきらない時だけ左へ寄せる)。黒い縁取りで、足・線の上でも読める
+   - 過去を見ている時など、cursorの足が画面の外にある時は、右端に寄せて出す(「いま何時か」は、常に分かる) */
+function webClockText(cd){
+  if(!cd) return '';
+  const t = String(cd.time || '').slice(0,5);
+  return webPref.clockMode === 'datetime' ? String(cd.date || '').replace(/-/g, '/') + ' ' + t : t;
+}
+function webClockDraw(ctx, text, x, y, limitRight, top, bottom){
+  const mobile = (typeof tkIsMobile === 'function' && tkIsMobile()), fs = mobile ? 14 : 16;
+  ctx.save();
+  ctx.font = `600 ${fs}px 'JetBrains Mono','SF Mono',Consolas,monospace`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.setLineDash([]);
+  const w = ctx.measureText(text).width, tx = Math.max(2, Math.min(x, limitRight - w)), ty = Math.round(Math.min(bottom - 4, Math.max(top + fs + 2, y - 5)));
+  ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.78)'; ctx.strokeText(text, tx, ty);
+  ctx.fillStyle = 'rgba(255,255,255,0.94)'; ctx.fillText(text, tx, ty);
+  ctx.restore();
+  return { text, x: tx, y: ty, w, fs, mode: webPref.clockMode };
+}
+function webClockDrawReplay(){
+  const canvas = document.getElementById('replayCanvas'); if(canvas) canvas.__webClock = null;
+  const rs = replayState, L = (typeof replayChartLayout !== 'undefined') ? replayChartLayout : null;
+  if(!rs || !canvas || !L || !rs._vp) return;
+  const cd = replayCurrentCandle(); if(!cd) return;
+  const vp = rs._vp, last = vp.nReal - 1, cssW = canvas.clientWidth || 900, axisX = cssW - REPLAY_PRICE_AXIS_W, barL = axisX - REPLAY_PIPS_BAR.gap - REPLAY_PIPS_BAR.width - 6;
+  const inView = last >= vp.left && last <= vp.right, top = L.padT, bottom = L.padT + L.plotH, y = Math.min(bottom, Math.max(top, L.priceToY(cd.c)));
+  canvas.__webClock = webClockDraw(canvas.getContext('2d'), webClockText(cd), inView ? L.idxToX(last) + L.cw*0.5 + 6 : barL, y, barL, top, bottom);
+}
+function webClockDrawM1(screen, canvas, model){ // チャート練習の1分足ペイン(replay)だけ。1分足の最後の足の右
+  if(screen !== 'replay' || !canvas) return; canvas.__webClock = null;
+  const L = m1Pane.layout.replay, d = m1Pane.drawn.replay, cs = m1Pane.cands.replay;
+  if(!L || !d || !d.ok || !cs || !cs.length || !model || !model.replay || !replayState) return;
+  const cd = replayCurrentCandle(); if(!cd) return;
+  const last = cs.length - 1, inView = last >= L.left && last <= L.right, barL = L.axisX - REPLAY_PIPS_BAR.gap - REPLAY_PIPS_BAR.width - 6, top = L.padT, bottom = L.padT + L.plotH, y = Math.min(bottom, Math.max(top, L.priceToY(cs[last].c)));
+  canvas.__webClock = webClockDraw(canvas.getContext('2d'), webClockText(cd), inView ? L.idxToX(last) + L.cw*0.5 + 6 : barL, y, barL, top, bottom);
+}
+function webClockRefresh(){ if(typeof replayState !== 'undefined' && replayState && document.getElementById('replayCanvas')) drawReplayChart(); } // 形式を変えた瞬間に、練習中のチャートへ反映(1分足ペインも drawReplayChart の後ろで描き直される)
+function webClockInstall(){
+  const after = (name, fn)=>{ const o = window[name]; if(typeof o !== 'function' || o.__webclock) return; const w = function(){ let r; try{ r = o.apply(this, arguments); } finally { try{ fn.apply(this, arguments); }catch(e){ console.error('[練習時刻]', e); } } return r; }; w.__webclock = true; window[name] = w; };
+  after('drawReplayChart', webClockDrawReplay);
+  after('m1PaneRender', webClockDrawM1);
+}
+webClockInstall();
+// ☰メニュー(スマホ / iPad)の見出しの行に入れる、時刻表示の切り替え(行の高さを増やさない)
+function tkClockHtml(){
+  const on = m=> webPref.clockMode === m ? ' tk-on' : '';
+  return `<span class="tk-clk" role="group" aria-label="練習時刻の表示形式"><small>時刻表示</small><button type="button" id="tkClock_time" class="tk-opt${on('time')}" aria-pressed="${webPref.clockMode==='time'}" onclick="tkClockSet('time')">01:00</button><button type="button" id="tkClock_datetime" class="tk-opt${on('datetime')}" aria-pressed="${webPref.clockMode==='datetime'}" onclick="tkClockSet('datetime')">日付+時刻</button></span>`;
+}
+function tkClockSet(mode){ webClockModeSet(mode); if(typeof tkDrawerRefresh === 'function') tkDrawerRefresh(); }
+
+/* ---- iPhone / iPad: 指標・休場のアイコンを「押している間」詳細を表示(チャートタブ / チャート練習 / チャート問題集) ----
+   - touchstart でアイコン(指の太さに合わせて半径22px)に当たったら、その場で詳細を出す。指を離したら閉じる(押している間は出し続ける)
+   - 指を少し動かしても(32px以内)閉じない・チャートはパンしない。別のアイコンへ滑らせると、そのアイコンの詳細に切り替わる。32pxより離れたら閉じて、通常のパンへ戻る
+   - 表示する中身は、PCのホバーと同じ関数(showEconTooltipGeneric / showHolidayTooltipGeneric)・同じマーカー(canvas.__indicatorMarkers / チャートタブは chartState.*MarkerPositions)。PCのhover(mouse)の処理は、変えない
+   - iOSの長押しメニュー(callout)・文字選択・iOSが指を離した後に出すマウス互換イベント(ツールチップが残る原因)を止める */
+const WEB_PEEK_IDS = ['chartCanvas', 'replayCanvas', 'quizCanvas'], WEB_PEEK_R = 22, WEB_PEEK_SLOP = 32;
+const webPeek = { active:false, cv:null, x0:0, y0:0, hit:null, gesture:false, until:0, shown:0 };
+function webPeekMarkers(cv){
+  if(cv.id === 'chartCanvas') return { holiday: chartState.holidayMarkerPositions || [], econ: chartState.econMarkerPositions || [], mql5: chartState.mql5MarkerPositions || [] };
+  return cv.__indicatorMarkers || null; // replayCanvas / quizCanvas: drawImg2Core が記録した、いま描いているアイコンの位置(Replay cutoffより先の指標は、そもそも描かれない)
+}
+function webPeekFind(cv, x, y){
+  const m = webPeekMarkers(cv); if(!m) return null;
+  let best = null, bd = WEB_PEEK_R + 1;
+  [['holiday', m.holiday], ['econ', m.econ], ['mql5', m.mql5]].forEach(([kind, arr])=> (arr || []).forEach(p=>{ const d = Math.hypot(x - p.x, y - p.y); if(d < bd){ bd = d; best = { kind, p, d }; } }));
+  return best;
+}
+function webPeekShow(hit, cx, cy){
+  if(hit.kind === 'holiday') showHolidayTooltipGeneric(hit.p.holidays, cx, cy); else showEconTooltipGeneric(hit.p.evs, cx, cy, hit.p.source);
+  const tip = document.getElementById('floatingIndTooltip'); if(!tip) return;
+  tip.style.pointerEvents = 'none';
+  const w = tip.offsetWidth, h = tip.offsetHeight; // 指に隠れないよう、指の上(入らなければ下)に出す
+  const left = Math.max(6, Math.min(window.innerWidth - w - 6, cx - w/2)); let top = cy - h - 28; if(top < 6) top = Math.min(window.innerHeight - h - 6, cy + 28);
+  tip.style.left = left + 'px'; tip.style.top = Math.max(6, top) + 'px'; webPeek.shown++;
+}
+function webPeekClose(){ if(!webPeek.active) return; webPeek.active = false; webPeek.hit = null; hideFloatingTooltip(); }
+function webPeekTouchStart(ev){
+  webPeek.until = 0; // 新しい指が触れた = 前の指のマウス互換イベントの抑止は、もう要らない(押してすぐのパンを、止めない)
+  if(webPeek.active && ev.touches.length > 1){ webPeekClose(); return; } // 2本目の指(ピンチ)
+  if(ev.touches.length !== 1) return;
+  const cv = ev.target; if(!cv || cv.tagName !== 'CANVAS' || WEB_PEEK_IDS.indexOf(cv.id) < 0) return;
+  const t = ev.touches[0], r = cv.getBoundingClientRect(), hit = webPeekFind(cv, t.clientX - r.left, t.clientY - r.top); if(!hit) return;
+  webPeek.active = true; webPeek.gesture = true; webPeek.cv = cv; webPeek.x0 = t.clientX; webPeek.y0 = t.clientY; webPeek.hit = hit.p;
+  webPeekShow(hit, t.clientX, t.clientY);
+}
+function webPeekTouchMove(ev){
+  if(!webPeek.active) return;
+  const t = ev.touches[0]; if(!t){ webPeekClose(); return; }
+  const r = webPeek.cv.getBoundingClientRect(), hit = webPeekFind(webPeek.cv, t.clientX - r.left, t.clientY - r.top);
+  if(hit && hit.p !== webPeek.hit){ webPeek.hit = hit.p; webPeek.x0 = t.clientX; webPeek.y0 = t.clientY; webPeekShow(hit, t.clientX, t.clientY); } // 別のアイコンへ滑らせた
+  else if(!hit && Math.hypot(t.clientX - webPeek.x0, t.clientY - webPeek.y0) > WEB_PEEK_SLOP){ webPeekClose(); return; } // 離れすぎた = パンの操作(以後は通常どおり)
+  ev.preventDefault(); ev.stopImmediatePropagation(); // 保持中は、パンへ渡さない
+}
+function webPeekTouchEnd(ev){
+  if(webPeek.active) webPeekClose();
+  if(webPeek.gesture && ev.touches.length === 0){
+    webPeek.gesture = false; webPeek.until = Date.now() + 700;
+    if(typeof tkUi !== 'undefined' && tkUi && tkUi.touch) tkUi.touch.moved = true; // アイコンを押して離しただけ: タップ(クリック)として、水平線を置かない
+    if(ev.cancelable) ev.preventDefault(); // マウス互換イベント(mousemove / click)を出させない
+  }
+}
+function webPeekInstall(){
+  document.addEventListener('touchstart', webPeekTouchStart, { passive:false, capture:true });
+  document.addEventListener('touchmove', webPeekTouchMove, { passive:false, capture:true });
+  document.addEventListener('touchend', webPeekTouchEnd, { passive:false, capture:true });
+  document.addEventListener('touchcancel', webPeekTouchEnd, { passive:false, capture:true });
+  document.addEventListener('mousemove', ev=>{ if(Date.now() < webPeek.until) ev.stopImmediatePropagation(); }, true); // 指を離した直後のマウス互換イベントだけ止める(PCのマウスは、touchが無い限り until=0)
+  document.addEventListener('contextmenu', ev=>{ const t = ev.target; if(t && t.tagName === 'CANVAS' && WEB_PEEK_IDS.indexOf(t.id) >= 0 && (webPeek.gesture || webPeek.until > Date.now() || webOrientCoarse())) ev.preventDefault(); }, true); // iOSの長押しメニュー
+}
+webPeekInstall();
+
+/* ---- iPhone / iPad: 横画面 ----
+   - Screen Orientation API の lock('landscape') が「使える環境だけ」試す(Android Chrome の全画面 / インストール済みPWAなど)。iOS Safari・iOSのホーム画面Webアプリには lock が無い(関数が存在しない)ので、何もしない
+   - 画面全体のCSS回転は、しない
+   - iOSなどで固定できない時の代わり: 縦向きでチャート系の画面(チャート / チャート練習 / チャート問題集)を開いている間だけ、小さく「横向きで表示すると見やすくなります」を出す。横向きになれば自動で消える(×で、このセッションは閉じられる)。
+     スマホ画面(Touch UI)の縦向きは、従来の全画面の案内(端末を横向きにしてください)があるので、重ねて出さない */
+const webOrient = { dismissed:false, lock:'none', locked:false };
+function webOrientCoarse(){ return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); }
+function webOrientPortrait(){ return window.matchMedia ? window.matchMedia('(orientation: portrait)').matches : window.innerHeight > window.innerWidth; }
+function webOrientChartView(){ return typeof state !== 'undefined' && (state.view === 'chart' || state.view === 'replay' || state.view === 'quiz'); }
+function webOrientCanLock(){ try{ return !!(window.screen && screen.orientation && typeof screen.orientation.lock === 'function'); }catch(e){ return false; } }
+function webOrientLockSync(){
+  if(!webOrientCoarse()) return;
+  if(webOrientChartView() && !webOrient.locked){
+    if(!webOrientCanLock()){ webOrient.lock = 'unsupported'; return; }
+    webOrient.locked = true;
+    Promise.resolve().then(()=> screen.orientation.lock('landscape')).then(()=>{ webOrient.lock = 'locked'; }).catch(e=>{ webOrient.lock = 'denied:' + (e && e.name || 'error'); webOrient.locked = false; webOrient.retryAfter = Date.now() + 60000; });
+  } else if(!webOrientChartView() && webOrient.locked){
+    webOrient.locked = false; webOrient.lock = 'none'; try{ screen.orientation.unlock(); }catch(e){}
+  }
+}
+function webOrientHintSync(){
+  const el = document.getElementById('webOrientHint');
+  const want = webOrientCoarse() && webOrientPortrait() && webOrientChartView() && !webOrient.dismissed && !(typeof tkIsMobile === 'function' && tkIsMobile());
+  if(!want){ if(el) el.remove(); return; }
+  if(el) return;
+  document.body.insertAdjacentHTML('beforeend', `<div id="webOrientHint" role="status"><span>横向きで表示すると見やすくなります</span><button type="button" aria-label="閉じる" onclick="webOrientDismiss()">✕</button></div>`);
+}
+function webOrientDismiss(){ webOrient.dismissed = true; webOrientHintSync(); }
+function webOrientSync(){
+  try{ if(!(webOrient.retryAfter > Date.now())) webOrientLockSync(); }catch(e){}
+  try{ webOrientHintSync(); }catch(e){}
+}
+function webOrientInstall(){
+  const o = window.render; if(typeof o === 'function' && !o.__weborient){ const w = function(){ const r = o.apply(this, arguments); webOrientSync(); return r; }; w.__weborient = true; window.render = w; }
+  window.addEventListener('resize', webOrientSync); window.addEventListener('orientationchange', webOrientSync);
+}
+webOrientInstall();
+/* [Web v0.3 JS] end */
 /* [Mobile v0.1 JS] begin */
 /* ============================================================
    [スマホ対応 v0.1] iPhone 16e の横画面でチャート練習するための「画面(View層)」
@@ -25289,7 +25594,7 @@ mergeImportInstall();
    ------------------------------------------------------------ */
 var tkUi = { mode:'desktop', orient:'landscape', rangeFrom:'', rangeTo:'', rangeEnd:'', drawer:false, touch:null, starting:false, resizeTimer:null, installed:false,
   notice:'', leaving:false, confirm:null, events:null, evPeek:null, evTimer:null, evSuppressClick:false, m1Ratio:null, split:null }; // [v0.2] notice = 期間選択画面に出す一言 / events・evPeek = 指標・休場の重ね表示(ON・押している間) / m1Ratio = 1分足ペインの高さの割合(境界のドラッグ。画面を開いている間だけ)
-const TK_SHORT_ENTER = 1024, TK_SHORT_LEAVE = 1100, TK_PRACTICE_VIEWS = ['replay', 'quiz', 'ftoLog', 'chart']; // [2026-10-15] スマホで開ける画面。'chart' = ☰ → チャート(通常のChartタブ)
+const TK_SHORT_ENTER = 1024, TK_SHORT_LEAVE = 1100, TK_PRACTICE_VIEWS = ['replay', 'quiz', 'ftoLog', 'chart', 'settings']; // [2026-10-15] スマホで開ける画面。'chart' = ☰ → チャート(通常のChartタブ)。[Web v0.3] 'settings' = ☰ → 設定(CSV読込・データ設定。画面の向き・大きさが変わって表示モードが切り替わった時に、設定を開いたまま追い出されない)
 function tkIsMobile(){ return tkUi.mode==='mobile'; }
 function tkUiOverride(){ const m = /[?&]ui=(mobile|desktop)(&|$)/.exec(window.location.search || ''); return m ? m[1] : null; }
 // 画面の判定: 上書き(?ui=mobile / ?ui=desktop)> (タッチが主な操作 = 主なポインタが coarse かつ 画面の短い辺が 1024px 以下)。[2026-10-16 iPad対応] 以前は「短い辺 500px 以下」だったため、iPad(第5世代 = 1024×768)はPC表示に入っていた。
@@ -25325,7 +25630,7 @@ function tkShellRemove(){ ['tkMenuBtn', 'tkDrawerScrim', 'tkDrawer', 'tkPortrait
 function tkDrawerHtml(){
   const mk = replayMarket.selected, on = m=> mk===m ? ' tk-on' : '', cur = v=> state.view===v ? ' tk-on' : '';
   const cost = replayState ? `<div id="replayCostPanel">${replayCostPanelHtml()}</div>` : `<div class="tk-note">取引コストは、練習を始めてから設定できます(PCと同じ設定です)</div>`;
-  return `<div class="tk-dhead"><b>メニュー</b><button type="button" id="tkDrawerClose" aria-label="閉じる" onclick="tkDrawerClose()">✕</button></div>
+  return `<div class="tk-dhead"><b>メニュー</b>${tkClockHtml()}<button type="button" id="tkNav_settings" class="tk-opt${cur('settings')}" onclick="tkNav('settings')">設定</button><button type="button" id="tkDrawerClose" aria-label="閉じる" onclick="tkDrawerClose()">✕</button></div>
     <section data-tk-sec="market"><h4>市場</h4><div class="tk-row2"><button type="button" id="tkMarketBtn_EUROPE" class="tk-opt${on('EUROPE')}" aria-pressed="${mk==='EUROPE'}" onclick="tkSetMarket('EUROPE')">欧州</button><button type="button" id="tkMarketBtn_NY" class="tk-opt${on('NY')}" aria-pressed="${mk==='NY'}" onclick="tkSetMarket('NY')">NY</button></div></section>
     <section data-tk-sec="practice"><h4>練習系</h4><div class="tk-row2"><button type="button" id="tkNav_chart" class="tk-opt${cur('chart')}" onclick="tkNav('chart')">チャート</button><button type="button" id="tkNav_replay" class="tk-opt${cur('replay')}" onclick="tkNav('replay')">チャート練習</button><button type="button" id="tkNav_quiz" class="tk-opt${cur('quiz')}" onclick="tkNav('quiz')">チャート問題集</button><button type="button" id="tkNav_ftoLog" class="tk-opt${cur('ftoLog')}" onclick="tkNav('ftoLog')">練習ログ</button></div>${replayState ? `<button type="button" id="tkReselect" class="tk-opt tk-wide" onclick="tkReselectClick()">期間を選び直す</button>` : ''}</section>
     <section data-tk-sec="cost"><h4>取引コスト</h4>${cost}</section>
