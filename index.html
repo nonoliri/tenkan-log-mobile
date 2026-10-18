@@ -438,9 +438,9 @@
    - Backupのschema_version・Practice Runのversion・Analysis Packの build_id(replayAnalysisBuildId = コードのハッシュ)とは別物。これらには触れない・保存もしない(表示だけ)
    - build を更新するのは、HTMLを配布する人(リリースの度に build id を新しくする)
    ------------------------------------------------------------ */
-const APP_BUILD_INFO = Object.freeze({ version:'v0.3.0', build:'2026-10-17-01' });
-function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.0 · build 2026-10-17-01」
-function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.0」「Build: 2026-10-17-01」
+const APP_BUILD_INFO = Object.freeze({ version:'v0.3.0', build:'2026-10-17-02' });
+function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.0 · build 2026-10-17-02」
+function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.0」「Build: 2026-10-17-02」
 (function appBuildApply(){ const el = document.getElementById('appVersionBadge'); if(el) el.textContent = appBuildTextPc(); })(); // PC表示(スマホでは CSS で隠す)
 /* ============================================================
    軸(次元)ベースのラベル定義
@@ -3102,6 +3102,11 @@ async function buildReplaySessionForDate(baseDate){
   // [開始状態] startIdx = 開始時刻(欧州市場開始。夏時間15:00 / 冬時間16:00)の足。練習は、その「直前の5分足(14:55 / 15:55)が確定した直後」から始める。
   //   開始時刻の足(15:00)は、まだ1本も見ていない。最初の→で、初めてRevealする。経済指標の予定は、従来どおり未来側にも出る(事前に分かっている情報)
   const openIdx = startIdx, preIdx = Math.max(0, openIdx - 1);
+  // [月またぎ・足の本数 2026-10-17] 上の +4日 は「先読みの目安」。練習が実際に使うのは「開始足から300本先まで」なので、それが読み込み済みの月に収まらない時
+  //   (+4日では届かない長い休場・欠けた日の後ろに月末が来る時)は、次の月を足す。足りていれば何もしない。保存先の月が尽きたら、そこまで(従来どおり終端)
+  { const sm = chartState.candles[openIdx].date.slice(0,7); let have = 0; // have = 開始月のうち、開始足以降の本数(+ 足した月の本数)
+    for(let i=openIdx; i<chartState.candles.length && chartState.candles[i].date.slice(0,7)===sm; i++) have++;
+    for(const nm of (chartState.index ? chartState.index.months : []).filter(m=> m>sm)){ if(have>300) break; await activateChartMonths([nm]); have += (chartState.monthCache[nm]||[]).length; } }
 
   const rs = {
     sessionDate: startDate, // 「次の日」ボタンで、ここから翌営業日を探す起点にする
@@ -3136,13 +3141,15 @@ async function buildReplaySessionForDate(baseDate){
     const warmupDate = addDaysStr(lookbackDate, -7);
     const monthsNeeded = state1m.index.months.filter(m=> m>=warmupDate.slice(0,7) && m<=addDaysStr(startDate, 4).slice(0,7)); // [月またぎ] 開始日の月まで → 練習が届く月(開始日 +4日)まで。月末(例: 8/31 23:59)で止まらない。金曜開始は、週末を飛ばして月曜(+3日)まで進むので、+2日では月曜が翌月1日の時に足りない(例: 金 5/29 → 月 6/1)。5分足側(baseDate +4日)と同じ
     for(const mk of monthsNeeded) await loadMonth1m(mk);
-    const all1m = monthsNeeded.flatMap(m=> state1m.monthCache[m]||[]);
+    let all1m = monthsNeeded.flatMap(m=> state1m.monthCache[m]||[]);
     const warmupPos = all1m.findIndex(c=> (c.date+' '+c.time) >= (warmupDate+' 00:00'));
     const startPos = all1m.findIndex(c=> (c.date+' '+c.time) >= (lookbackDate+' '+lookbackTime));
     if(startPos>=0){
       const wPos = warmupPos>=0 && warmupPos<startPos ? warmupPos : startPos;
       const beginPos = all1m.findIndex(c=> (c.date+' '+c.time) >= (startDate+' '+startTime));
       if(beginPos>=0){
+        // [月またぎ・足の本数] 開始足から1500本先まで、足が揃っていない時(+4日では届かない長い休場・欠けた日)は、次の月を足す。足りていれば何もしない。月が尽きたらそこまで
+        for(const nm of state1m.index.months.filter(m=> m>monthsNeeded[monthsNeeded.length-1])){ if(all1m.length-1 >= beginPos + 300*5) break; await loadMonth1m(nm); all1m = all1m.concat(state1m.monthCache[nm]||[]); }
         rs.use1m = true;
         rs.oneMin = all1m.slice(wPos);
         const openRel = beginPos - wPos; // 開始時刻(15:00)の1分足の位置
@@ -10316,7 +10323,8 @@ async function replayAnalysisPriceFor(marketDate, rd, market){
   };
   const idx = rd.idx1m;
   if(idx && idx.minDate && idx.minDate <= lookbackDate){ // リプレイ試作が1分足モードで動く条件(buildReplaySessionForDateと同じ)
-    const all1m = []; for(const m of idx.months.filter(m=> m>=warmupDate.slice(0,7) && m<=addDaysStr(marketDate, 4).slice(0,7))) for(const c of await rd.month('1m', m)) all1m.push(c); // [月またぎ 2026-10-17] buildReplaySessionForDate の monthsNeeded と同じ範囲(+4日。金曜開始は月曜まで)(練習が月末をまたいで進めるので、価格データも同じ所まで)
+    const ms1 = idx.months.filter(m=> m>=warmupDate.slice(0,7) && m<=addDaysStr(marketDate, 4).slice(0,7)), all1m = []; for(const m of ms1) for(const c of await rd.month('1m', m)) all1m.push(c); // [月またぎ 2026-10-17] buildReplaySessionForDate の monthsNeeded と同じ範囲(+4日。金曜開始は月曜まで)(練習が月末をまたいで進めるので、価格データも同じ所まで)
+    for(const nm of idx.months.filter(m=> m>(ms1[ms1.length-1]||''))){ const b = all1m.findIndex(c=> key(c) >= openKey); if(b<0 || all1m.length-1 >= b + REPLAY_ANALYSIS_M1_AFTER_OPEN) break; for(const c of await rd.month('1m', nm)) all1m.push(c); } // [月またぎ・足の本数] buildReplaySessionForDate と同じ: 開始足から1500本先まで揃わない時だけ、次の月を足す(エンジンが実際に進める所まで書く。月が尽きたらそこまで)
     const startPos = all1m.findIndex(c=> key(c) >= lookbackKey);
     if(startPos>=0){
       const warmupPos = all1m.findIndex(c=> key(c) >= warmupKey), wPos = (warmupPos>=0 && warmupPos<startPos) ? warmupPos : startPos, beginPos = all1m.findIndex(c=> key(c) >= openKey);
@@ -10343,7 +10351,7 @@ async function replayAnalysisBuild(range){
       replay_range:'開始時刻の足から、1,500本先(M5は300本先)まで。ただし、保存先のデータの終わりまで(月末をまたいで進む)', price_rule:'Entry・決済の価格 = その時点のReplay cursorのM1の終値(spread・commission・slippageは、価格に含めない)', cost_model:'NONE (net_pips = gross_pips) または AXIORY_TERA_GBPUSD_V1。各Runの cost_model に記録(コスト項目が無い古いRunは NONE として読む)',
       cost_models:{ NONE:'コストなし。net_pips = gross_pips', AXIORY_TERA_GBPUSD_V1:{ formula:'net_pips = gross_pips − spread_cost_pips − commission_cost_pips(決済したPosition(closed Position)ごとに1回。保有中は対象外)', spread:'FIXED_SESSION: ユーザーがReplay Session(Run)ごとに入力(pips)。そのRunの全Positionに同じ値。spread_cost_pips = spread_pips', commission:'往復 $'+REPLAY_COST_AXIORY_SPEC.commission_roundtrip_usd_per_lot+' / standard lot ÷ GBPUSDのpip値 $'+REPLAY_COST_PIP_VALUE_USD_PER_LOT+'/pip = '+replayCostCommissionPips()+' pips / closed Position(Replayは数量を持たない: 1 Position = 1単位)', components:'gross_pips(価格の動き)・spread_cost_pips・commission_cost_pips は別の成分。Entry・決済の価格には含めない' } }, positions:'Q/Wで1つずつ独立したPositionとして追加(ナンピン可)。各Tradeは1つのPosition',
       analysis_context:{ definition:'Replay開始時点でチャートが参照できた過去の価格(リプレイ試作が、開始時点で実際に持っていた価格のバッファ)。BB・MA・MTMA・Swing・値動きの大きさ(Scale)などのBaselineを、開始時点の情報だけから再計算するために含める',
-        start_rule:'表示の起点 = 開始時刻の5分足の100本前。その日付の7日前の0:00から(MTMA H4の10期間 ≒ 約40時間分などを、開始時点から計算できるため。週末・祝日を挟んでも足りる)。保存先のデータの始まりより前は、データの始まりから', no_future:'増えるのは、開始時刻より前の、すでに知ることができた価格だけ。未来の価格は増やしていない(開始時刻の足〜price_data_endは、Context追加前と同じ)',
+        start_rule:'表示の起点 = 開始時刻の5分足の100本前。その日付の7日前の0:00から(MTMA H4の10期間 ≒ 約40時間分などを、開始時点から計算できるため。週末・祝日を挟んでも足りる)。保存先のデータの始まりより前は、データの始まりから', no_future:'増えるのは、開始時刻より前の、すでに知ることができた価格だけ。未来の価格は増やしていない(開始時刻の足〜price_data_end_timeは、Replayが実際に進める範囲(replay_engine.replay_range)で、Contextを足しても変わらない。月末をまたぐ練習は、翌月の分まで含む。旧ビルドで書き出したPackは、月末で終わっている)',
         split_rule:'各市場日の price_data: t < replay_start_time の足 = 開始時点で既知(analysis_context_start_time 〜 initial_knowledge_cutoff_time)。t >= replay_start_time の足 = Replayで→を押して順に見えた分(〜 price_data_end_time)' } },
     field_availability:{ market_session:'runs[].market_session = どの市場の練習か("EUROPE" | "NY")。この項目が無い古いRunは EUROPE として書き出す', completion_state:'COMPLETED = 練習が完了したRun(別の市場日へ移った・最後まで進めた・「この日の練習を確定」を押した。この項目が無い古いRunも、COMPLETED相当)。IN_PROGRESS = 自動保存の途中のRun(ブラウザを閉じた等で、完了する前に終わった場合を含む)。IN_PROGRESSのRunの結果(pips・Trade件数)は、暫定。completed_at は、COMPLETEDのRunだけ(IN_PROGRESSは null)。last_saved_at = 最後に保存した時刻', quantity:'Replayは数量を持たない(各Position = 1単位)ため、出力しない', cost:'runs[].cost_model / spread_mode / spread_pips / commission_roundtrip_usd_per_lot / commission_roundtrip_pips = そのRunのコスト設定(NONE・古いRunは cost_model = NONE、他は null)。summary と trades[] の gross_pips / spread_cost_pips / commission_cost_pips / net_pips = コストの内訳(決済したPositionごと。total_cost_pips = spread_cost_pips + commission_cost_pips)。trades[].pips は、これまでと同じ(= gross_pips)', exit_reason:'保存済みのauto_stop_loss(自動損切り)から導く: AUTO_STOP_LOSS または MANUAL(「全部まとめて決済」も個別の決済も、MANUAL)', add_on:'positions_open_before_entry = そのTradeを始めた時点で、同じRunの他のPositionが保有中だった数。is_add_on = それが1以上', open_positions:'保存時に保有中だったPositionの詳細は、Practice Runに保存されていない(件数 open_count だけ)', labels:'「良い/悪いエントリー」等の評価・後付けのラベルは、含まない' },
     indicator_metadata:{ note:'パラメータの記録だけ。BB・MA・Swing・PINK等の計算結果・判定結果は、書き出さない(Raw M1とTrade Actionが正本)', computed_series_exported:false, replay_chart_indicators:CHART_INDICATOR_META.filter(m=> REPLAY_ANALYSIS_INDICATOR_KEYS.includes(m.key)).map(m=> ({ key:m.key, label:m.label })) },
