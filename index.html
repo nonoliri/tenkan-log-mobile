@@ -296,6 +296,8 @@
   html[data-ui="mobile"] .web-settings .ws-radio{min-height:44px;}
   /* Case Review / Step Replay 中: 設定タブのCSV読み込みも、従来のチャートタブのボタンと同じく押せなくする(#chartDataSettingsBtn は、IDで既に対象) */
   body.case-review-active .web-settings button[onclick*="chartCsvInput"], body.step-replay-active .web-settings button[onclick*="chartCsvInput"]{pointer-events:none;opacity:.35;}
+  /* [Web v0.3.1] 「FTOインジケータ用データを出力」を、チャートタブのツールバーから設定タブへ移した。Case Review / Step Replay 中に押せない、は移した先でも従来どおり */
+  body.case-review-active .web-settings button[onclick^="openFtoIndicatorExport"], body.step-replay-active .web-settings button[onclick^="openFtoIndicatorExport"]{pointer-events:none;opacity:.35;}
   /* [Web v0.3 CSS] end */
   /* [Mobile v0.1 CSS] begin */
   /* スマホ(iPhone 16e の横画面)用の見た目。PC版には掛からない: 全てのセレクタが html[data-ui="mobile"] から始まる(JSが、画面の大きさ・タッチ・向きから data-ui を決める)。
@@ -312,12 +314,13 @@
   html[data-ui="mobile"][data-tkview="replay-live"] body{overflow:hidden;}
   /* 縦画面: チャートUIは出さず、警告だけ(向きは固定しない。横にすると自動で戻る) */
   html[data-ui="mobile"] #tkPortraitWarn{display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:100001;background:var(--bg);color:var(--text);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px;}
-  html[data-ui="mobile"][data-orient="portrait"] #tkPortraitWarn{display:flex;}
-  html[data-ui="mobile"][data-orient="portrait"] #app{display:none;}
-  html[data-ui="mobile"][data-orient="portrait"] #tkMenuBtn{display:none;}
-  html[data-ui="mobile"][data-orient="portrait"] #tkDrawer{display:none;}
-  html[data-ui="mobile"][data-orient="portrait"] #tkDrawerScrim{display:none;}
-  html[data-ui="mobile"][data-orient="portrait"] #tkEventsPanel{display:none;}
+  /* [Web v0.3.1] 縦画面でも「チャート」(☰ → チャート = チャートタブ)だけは、警告で隠さず、5分足と1分足を上下に出す(下の 1分足ペインのCSV)。チャート練習・問題集などは従来どおり、縦画面は警告のみ */
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #tkPortraitWarn{display:flex;}
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #app{display:none;}
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #tkMenuBtn{display:none;}
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #tkDrawer{display:none;}
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #tkDrawerScrim{display:none;}
+  html[data-ui="mobile"][data-orient="portrait"]:not([data-tkview="chart"]) #tkEventsPanel{display:none;}
   html[data-ui="mobile"] #tkPortraitWarn .tk-pw-icon{font-size:44px;line-height:1;}
   html[data-ui="mobile"] #tkPortraitWarn .tk-pw-text{font-size:20px;font-weight:700;}
   html[data-ui="mobile"] #tkPortraitWarn .tk-pw-sub{font-size:13px;color:var(--sub);}
@@ -412,7 +415,7 @@
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-body{flex:0 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:2px 12px;}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-row{font-size:12.5px;line-height:1.45;padding:5px 0;border-bottom:1px dashed var(--line);}
   html[data-ui="mobile"] #tkEventsPanel .tk-ev-none{font-size:12.5px;color:var(--sub);padding:10px 0;}
-  /* [2026-10-15] スマホの「チャート」(☰メニュー → チャート。通常のChartタブ = PCと同じ画面・同じ描画)。常設のタブは足さない。ツールバーは1行(横にスクロール)・チャートは画面の残りいっぱい・ボタンは44px以上。1分足ペインは、スマホのチャートでは出さない(高さが足りないため) */
+  /* [2026-10-15] スマホの「チャート」(☰メニュー → チャート。通常のChartタブ = PCと同じ画面・同じ描画)。常設のタブは足さない。ツールバーは1行(横にスクロール)・チャートは画面の残りいっぱい・ボタンは44px以上。1分足ペインは、[Web v0.3.1] PCと同じく出す(以前は、高さが足りないため出さなかった) */
   html[data-ui="mobile"][data-tkview="chart"] #app{padding:0 max(3px,var(--tk-safe-r)) 2px max(3px,var(--tk-safe-l));}
   html[data-ui="mobile"][data-tkview="chart"] .chart-toolbar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:8px;margin:0 0 4px;padding:2px 6px 2px 54px;min-height:50px;border-radius:10px;}
   html[data-ui="mobile"][data-tkview="chart"] .chart-toolbar .grp{flex:0 0 auto;}
@@ -420,8 +423,11 @@
   html[data-ui="mobile"][data-tkview="chart"] .chart-toolbar input[type=time]{min-height:44px;}
   html[data-ui="mobile"][data-tkview="chart"] .chart-toolbar .chart-status{flex:0 0 auto;white-space:nowrap;}
   html[data-ui="mobile"][data-tkview="chart"] #chartCanvasWrap{padding:4px;border-radius:10px;}
-  html[data-ui="mobile"][data-tkview="chart"] #chartM1Pill, html[data-ui="mobile"][data-tkview="chart"] #chartM1Slot{display:none !important;}
+  /* [Web v0.3.1] 以前は、スマホのチャートでは1分足ペインの開閉ボタン(#chartM1Pill)と枠(#chartM1Slot)を display:none にしていた。PCと同じく出す。説明文(#chartM1Slot + div)だけは、画面が狭いので出さない */
   html[data-ui="mobile"][data-tkview="chart"] #chartM1Slot + div{display:none;}
+  html[data-ui="mobile"] #chartM1Canvas{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  html[data-ui="mobile"] #chartM1ToggleBtn{position:relative;}
+  html[data-ui="mobile"] #chartM1ToggleBtn::after{content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);}
   /* [Mobile v0.1 CSS] end */
 </style>
 </head>
@@ -438,9 +444,9 @@
    - Backupのschema_version・Practice Runのversion・Analysis Packの build_id(replayAnalysisBuildId = コードのハッシュ)とは別物。これらには触れない・保存もしない(表示だけ)
    - build を更新するのは、HTMLを配布する人(リリースの度に build id を新しくする)
    ------------------------------------------------------------ */
-const APP_BUILD_INFO = Object.freeze({ version:'v0.3.0', build:'2026-10-17-02' });
-function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.0 · build 2026-10-17-02」
-function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.0」「Build: 2026-10-17-02」
+const APP_BUILD_INFO = Object.freeze({ version:'v0.3.1', build:'2026-10-18-02' });
+function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.1 · build 2026-10-18-02」
+function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.1」「Build: 2026-10-18-02」
 (function appBuildApply(){ const el = document.getElementById('appVersionBadge'); if(el) el.textContent = appBuildTextPc(); })(); // PC表示(スマホでは CSS で隠す)
 /* ============================================================
    軸(次元)ベースのラベル定義
@@ -3199,7 +3205,7 @@ async function replayNextDay(){
   const stPrev = replayPracticeStatus(replayState), datePrev = replayState.sessionDate; let practiceNote = '';
   if(stPrev==='UNSAVED' || stPrev==='CHANGED'){ const saved = await replayPracticeSave({ auto:true }); practiceNote = saved ? '前の日('+datePrev+')の練習を保存しました: '+replayPracticeNotice(saved) : '⚠ 前の日('+datePrev+')の練習は保存できませんでした'; }
   else if(stPrev==='SAVED'){ const rp = replayPracticeFindRun(replayState.practiceRunId); practiceNote = '前の日('+datePrev+')の練習は保存済みです: Review #'+(rp ? rp.practice_iteration : '?'); }
-  const prevClosedTrades = replayState.closedTrades;
+  const prevClosedTrades = replayState.closedTrades, prevHistoryDays = replayState.historyDays, prevSessionDate = replayState.sessionDate;
   const prevSettings = { windowSize: replayState.windowSize,
     speed: replayState.speed,
     autoStopLossEnabled: replayState.autoStopLossEnabled,
@@ -3210,6 +3216,9 @@ async function replayNextDay(){
   replayState.closedTrades = prevClosedTrades; // 決済履歴は練習セッションを通して引き継ぐ
   replayState.carriedCount = prevClosedTrades.length; replayState.notice = practiceNote; // [リプレイ練習ログ] 引き継いだ分は、この日のRunに入れない
   Object.assign(replayState, prevSettings); // 速度・自動損切り等の設定も引き継ぐ
+  replayRedLineModeInit(replayState); // [Web v0.3.1] 次の日も、水平線モードはONで始める(前の日にOFFへ切り替えても、引き継がない)
+  // [Web v0.3.1] 決済履歴の「日計」(表示だけ): 前の日までの決済の件数を、その日の market_date ごとに覚える(closedTrades・Runには足さない)。日計は、この区切りで market_date 単位に集計する
+  replayState.historyDays = (prevHistoryDays || []).concat([{ market_date: prevSessionDate, end: prevClosedTrades.length }]);
   refreshReplayView();
 }
 // リプレイ試作タブを開いた時の、非同期セッション開始処理。render()の通常のmount工程から呼ばれる
@@ -3220,8 +3229,11 @@ async function startReplaySessionForDate(dateStr){
   if(!dateStr) return;
   replayRedLineDrag = null; replayRedLineDidDrag = false;
   replayState = await buildReplaySessionForDate(dateStr);
+  replayRedLineModeInit(replayState); // [Web v0.3.1] 新しい練習は、水平線モードON(全端末。前回OFFにしたかは、引き継がない = 保存しない)
   render();
 }
+// [Web v0.3.1] 赤い水平線(水平線モード)の初期状態 = ON。表示・入力モードの初期値だけ。red_lines の保存形式・固定(Freeze)・ロック時刻には触れない。その練習の中でOFFへ切り替えることはできる
+function replayRedLineModeInit(rs){ if(rs) rs.redLineMode = true; }
 function onReplay1mCsvFile(ev){
   const file = ev.target.files[0];
   if(file) importCandleCsv1m(file);
@@ -3441,8 +3453,10 @@ function drawReplayChart(){
   try{
     chartState.candles = view; chartState.ind = cache.ind;
     state.econEvents = replayEconView(savedEcon, cursorKey, dateLo, dateHi); state.mql5Events = replayEconView(savedMql5, cursorKey, dateLo, dateHi);
+    hourGridPractice = true; // [Web v0.3.1 build -02] PCのチャート練習の縦点線 = チャートタブと同じ(下の finally で戻す。スマホは hourGridStyle が従来どおり MOBILE)
     layout = drawImg2Core(canvas, left, right, cssWidth, cssHeight, 'daythumb', null, dateLo, dateHi, rs.redLines, null, true, true, real.length-1, null, true, null, null, null, replayChartHover, null, null, null, (typeof tkIsMobile==='function' && tkIsMobile()) ? rs.windowSize : null); // [スマホ v0.2] 最後の引数 = 表示密度の下限。スマホだけ(PCは従来のまま = null)
   } finally {
+    hourGridPractice = false;
     chartState.candles = savedCandles; chartState.ind = savedInd; state.econEvents = savedEcon; state.mql5Events = savedMql5;
   }
   replayChartLayout = layout;
@@ -3696,16 +3710,25 @@ function renderReplayStatusPanel(){
 function renderReplayViewContent(){
   if(!replayState) return '';
   const hv = replayHistoryView(replayState); // [決済履歴のNet表示] 各行・合計は、現在のCost Modelを適用したNet(表示だけ。t.pips・保存・Runは、そのまま)
-  const tradesHtml = replayState.closedTrades.map((t,i)=>{
+  // [Web v0.3.1] 各行の日付 = 実際のEntry日時の日付(t.entryDate = Entryした足の date。NYで0時を跨いだEntryは、跨いだ後の日付)。日計は、同じ market_date の決済をまとめた表示用の合計(下の replayHistoryGroups)
+  const tradeRowHtml = (t,i)=>{
     const v = hv.rows[i], color = v>=0 ? '#4DB6AC' : '#DC143C';
-    return `<div${hv.notes[i] ? ' title="'+hv.notes[i]+'"' : ''} style="font-size:11.5px;padding:4px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;">
-      <span>${t.direction==='buy'?'買い':'売り'} ${t.entryTime}→${t.exitTime}${t.autoStopLoss?' 🤖自動損切り':''}</span>
+    return `<div data-history-row="1"${hv.notes[i] ? ' title="'+hv.notes[i]+'"' : ''} style="font-size:11.5px;padding:4px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;">
+      <span>${t.direction==='buy'?'買い':'売り'} ${t.entryDate ? t.entryDate+' ' : ''}${t.entryTime}→${t.exitTime}${t.autoStopLoss?' 🤖自動損切り':''}</span>
       <span style="color:${color};">${v>0?'+':''}${v}pips</span>
+    </div>`;
+  };
+  const dayTotalText = v=>{ let s = v.toFixed(2); if(s.endsWith('0')) s = s.slice(0,-1); return (v>0 ? '+' : '')+s; }; // 日計の表示: 少なくとも小数1桁(+15.0 / 0.0 / -3.7)。2桁が要る時だけ2桁(Net -4.45 など = 各行の合計と同じ)
+  const tradesHtml = replayHistoryGroups(replayState, hv).map(g=>{
+    const dc = g.total>=0 ? '#4DB6AC' : '#DC143C';
+    return `<div data-history="day" data-market-date="${g.market_date}" style="display:flex;align-items:stretch;">
+      <div style="flex:1 1 auto;min-width:0;">${g.idx.map(i=> tradeRowHtml(replayState.closedTrades[i], i)).join('')}</div>
+      <div data-history="daytotal" data-market-date="${g.market_date}" title="${g.market_date} の決済(${g.idx.length}件)の合計(${hv.label})" style="flex:0 0 auto;min-width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0 8px;border-left:1px solid var(--line);border-bottom:1px dashed var(--line);font-size:11.5px;font-weight:700;color:${dc};white-space:nowrap;"><span style="font-size:9.5px;font-weight:400;color:var(--sub);">日計</span><span>${dayTotalText(g.total)}pips</span></div>
     </div>`;
   }).join('');
   const unit = replayState.use1m ? '分足' : '5分足';
   const cd = replayCurrentCandle();
-  const totalClosedPips = hv.total;
+  // [Web v0.3.1 build -02] 履歴全体の「合計 Net」は表示しない(market_date ごとの「日計」だけ)。hv.total は、ここでは使わない
   const progressCur = replayState.use1m ? replayState.cursor1mIdx : (replayState.cursorIdx-replayState.startIdx);
   const progressMax = replayState.use1m ? replayState.max1mIdx : (replayState.maxIdx-replayState.startIdx);
   return `
@@ -3771,7 +3794,6 @@ function renderReplayViewContent(){
             ${replayState.closedTrades.length ? `<div style="border-top:1px solid var(--line);padding-top:8px;">
               <div style="font-size:11px;color:var(--sub);margin-bottom:4px;display:flex;justify-content:space-between;">
                 <span data-history="title" data-basis="${hv.basis}" title="${hv.help}">${hv.title}・保存されません</span>
-                <span data-history="total" data-basis="${hv.basis}" style="color:${totalClosedPips>=0?'#4DB6AC':'#DC143C'};font-weight:700;white-space:nowrap;">合計 ${hv.label} ${totalClosedPips>0?'+':''}${totalClosedPips}pips</span>
               </div>
               ${tradesHtml}
             </div>` : ''}
@@ -9853,6 +9875,18 @@ function replayCostSummaryHtml(rs){
   if(!s.valid) return `<div id="replayCostSummary" data-valid="0" style="font-size:11px;color:#FFB74D;margin-top:6px;line-height:1.5;">コスト(${REPLAY_COST_AXIORY}): spread(pips)が未入力です。入力するまで、Entryできません</div>`;
   return `<div id="replayCostSummary" data-valid="1" style="font-size:11px;color:var(--sub);margin-top:6px;line-height:1.5;">コスト(${REPLAY_COST_AXIORY}): spread ${replayCostFmt(c.spread_pips)} + commission ${replayCostFmt(c.commission_roundtrip_pips)} = ${replayCostFmt(s.per_position)} pips / 決済したPosition<br>この日の決済${s.n}件: gross ${rpFmt(s.gross)} − cost ${replayCostFmt(s.total_cost_pips)} = net ${rpFmt(s.net_pips)} pips</div>`;
 }
+// [Web v0.3.1] 決済履歴の「日計」(表示だけ): 同じ Practice Run の market_date(= その練習日の rs.sessionDate)の決済を1つにまとめ、その日の Net pips(各行の表示値 hv.rows の合計。closedTradesの決済だけ = 保有中は入らない)を出す。
+//   グループは実カレンダー日ではなく market_date(NYは21:00 / 22:00開始で翌日にまたがるため、0時で分けない)。closedTrades は新しい順で、前の日までの決済の件数は、replayNextDay が rs.historyDays に覚える(closedTrades・Run・保存には何も足さない)
+function replayHistoryDays(rs){ // closedTrades と同じ並び(新しい順)で、各決済の market_date
+  const list = rs.closedTrades, n = list.length, cuts = rs.historyDays || [];
+  return list.map((t,i)=>{ const j = n-1-i; for(const c of cuts){ if(j < c.end) return c.market_date; } return rs.sessionDate; }); // j = 古い順の位置。前の日の区切り(end = その日の終わりまでの累計)に収まれば、その日 / どれにも収まらなければ、いまの日
+}
+function replayHistoryGroups(rs, hv){ // [{ market_date, idx:[closedTradesのindex(新しい順)], total }] 新しい日が先
+  const days = replayHistoryDays(rs), groups = [];
+  days.forEach((d,i)=>{ let g = groups[groups.length-1]; if(!g || g.market_date !== d){ g = { market_date:d, idx:[], total:0 }; groups.push(g); } g.idx.push(i); g.total += hv.rows[i]; });
+  groups.forEach(g=>{ g.total = Math.round(g.total*100)/100; if(g.total === 0) g.total = 0; }); // 小数2桁に丸める(各行のNetは最大2桁。浮動小数の誤差を消す)。表示は、少なくとも1桁(+15.0pips)で、2桁が要る時だけ2桁(renderReplayViewContent)。-0 は 0
+  return groups;
+}
 // [決済履歴のNet表示] チャート練習の「決済履歴」の各行と合計(表示だけ)。Gross(t.pips)に、いまのCost Modelを、既存の replayCostTrade / replayCostTotals で適用したNetを返す
 //   - NONE: コスト0なので Net = Gross(数字は、これまでと同じ)。Axiory Tera: 決済したPositionごとに spread + commission を引く(最初のEntry後は、Runへ固定した設定。replayCostConfigが返す)
 //   - Axiory Teraで spread が未入力(Netを出せない。前の日から引き継いだ履歴だけが残る時)は、推定せず、Grossのまま「Gross」と明記する
@@ -11017,7 +11051,7 @@ replayOriginInstall();
    - 「練習セッション」= 「▶ この日から開始」から、「セッションをリセット」まで。「次の日へ」・日付の変更・タブの切り替え・1分足の開閉・Zoom/Pan・Entry・決済・答え合わせでは、続く(1つの市場日 = replayState より長い)
    - セッション全体の状態(replaySession)は、表示用のSession State。保存しない。Practice Run / PnL / Analysis Pack / Storage Schema には足さない。画面の再描画では作り直さない(1秒のタイマーは、セッションを始めた時に1本だけ作り、リセットで止める)
    - practice_session_started_at(ISO)が、経過時間と記録日の両方のSource of Truth。practice_session_date は、そこからAsia/Tokyo(UTC+9。夏時間なし)の日付を、セッション開始時に一度だけ作る(0時を跨いでも・次の日へ・答え合わせ・1分足の開閉でも、作り直さない)
-   - 進捗: 分母 = 開始日から、保存されている5分足データの最後の日までの、実際のMarket Date(5分足のデータに現れる日 = 「次の日へ」で進む日)。セッション開始時に確定。
+   - 進捗: 分母 = 開始日から、保存されている5分足データの最後の日までの、月曜〜金曜の日数(暦で数える。土日は除く・祝日は除かない)[Web v0.3.1。以前は5分足のデータに現れる日付を数えていたため、土曜 00:00〜06:55 の足の日=土曜日も含まれていた]。セッション開始時に確定。
             分子 = このセッションで「正常に確定した」(Runを COMPLETED で保存できた)Market Dateの数。同じ日は1回(Set)。日付を開いただけ・自動保存の途中(IN_PROGRESS)・保存失敗・見送り確認のキャンセルでは増えない。過去のReview件数は読まない
    - Runごとの練習時間(practice_duration_sec): その日のReplayを始めた時刻(rs.startedAt。「次の日へ」で新しい日が始まると、0から)から、Runを COMPLETED で保存する時刻までの整数秒。
             確定でない保存・保存失敗では付けない(失敗した保存は取り消す)。確定済みのRunには、あとから足さない・変えない。古いRun(項目なし)は、0秒ではなく「不明」(練習ログでは —)。PnL・Cost・Trade・red_linesは読まない・変えない
@@ -11051,13 +11085,16 @@ function replaySessionAttach(rs, s){ // 開始日が、分母に無い時(デー
   replaySessionByState.set(rs, s);
   if(rs.sessionDate && !s.dates.includes(rs.sessionDate)){ s.dates.push(rs.sessionDate); s.dates.sort(); }
 }
-async function replaySessionPeriodDates(startDate){ // 開始日〜データの最後の日の、実際のMarket Date(5分足のデータに現れる日)。月ごとに読んで日付だけ集め、読み込みのcacheは、元に戻す
+async function replaySessionPeriodDates(startDate){ // [Web v0.3.1] 開始日〜データの最後の日の「月曜〜金曜」(暦の日付で数える。土曜・日曜は除く。祝日は除かない)。以前は、5分足のデータに現れる日付をそのまま数えていたため、金曜の夜が土曜 00:00〜06:55 の足になるJSTのデータでは、土曜日も1日として数えていた
   await ensureCandleIndexLoaded();
-  const set = new Set(), add = arr=> { for(const c of arr) if(c.date >= startDate) set.add(c.date); }, idx = chartState.index;
-  if(idx && Array.isArray(idx.months) && idx.months.length){
-    for(const mk of idx.months.filter(m=> m >= startDate.slice(0,7)).sort()){ const had = !!chartState.monthCache[mk]; add(await loadMonth(mk)); if(!had) delete chartState.monthCache[mk]; }
-  } else add(chartState.candles);
-  return [...set].sort();
+  const idx = chartState.index, cs = chartState.candles, last = (idx && idx.maxDate) || (cs.length ? cs[cs.length-1].date : '');
+  return replayWeekdaysBetween(startDate, last);
+}
+function replayWeekdaysBetween(from, to){ // from〜to(両端を含む)の月〜金の日付(YYYY-MM-DD)。UTCの暦で1日ずつ進める = 夏時間・月末・年末・うるう年でずれない(文字列の差分では数えない)
+  const re = /^(\d{4})-(\d{2})-(\d{2})$/, a = re.exec(from || ''), b = re.exec(to || ''); if(!a || !b) return [];
+  const end = Date.UTC(+b[1], +b[2]-1, +b[3]), out = []; let t = Date.UTC(+a[1], +a[2]-1, +a[3]);
+  for(let n = 0; t <= end && n < 20000; n++, t += 86400000){ const d = new Date(t), w = d.getUTCDay(); if(w >= 1 && w <= 5) out.push(d.toISOString().slice(0,10)); }
+  return out;
 }
 function replaySessionMarkDone(rs, date){ // Runが正常に確定した時だけ
   const s = replaySessionFor(rs); if(!date || (s.dates.length && !s.dates.includes(date))) return;
@@ -11072,7 +11109,7 @@ function replaySessionChipText(){
 function replaySessionTick(){ const el = document.getElementById('replaySessionChip'); if(!el) return; const t = replaySessionChipText(); if(t && el.textContent!==t) el.textContent = t; }
 function replaySessionChipHtml(){ // タイトルの行の、見出しとリセットボタンの間の、余った幅だけを使う(高さ・幅を足さない = チャートの大きさ・ツールバーの折り返しは変わらない)
   if(!replaySession) return '';
-  return `<span id="replaySessionChip" title="進捗 = 今回の練習で正常に確定した日 / 練習期間(開始日〜データの最後)のMarket Date数。経過 = 今回の練習セッションを始めてからの時間(次の日へ・1分足の開閉・答え合わせでは戻りません)" style="flex:1 1 0;min-width:0;margin:0 14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:13px;color:var(--text);font-variant-numeric:tabular-nums;">${escapeHtml(replaySessionChipText())}</span>`;
+  return `<span id="replaySessionChip" title="進捗 = 今回の練習で正常に確定した日 / 練習期間(開始日〜データの最後)の月〜金の日数。経過 = 今回の練習セッションを始めてからの時間(次の日へ・1分足の開閉・答え合わせでは戻りません)" style="flex:1 1 0;min-width:0;margin:0 14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:13px;color:var(--text);font-variant-numeric:tabular-nums;">${escapeHtml(replaySessionChipText())}</span>`;
 }
 // ---- Runごとの練習時間 / 記録日(replayPracticeSave から呼ぶ) ----
 function replayPracticeRecordedDate(rs){ return replaySessionFor(rs).practice_session_date; }
@@ -11138,7 +11175,7 @@ const M1_PANE_IDS = {
   quiz:   { canvas:'quizM1Canvas',   slot:'quizM1Slot',   btn:'quizM1ToggleBtn' }
 };
 const M1_PANE_STYLE = { MAX_BARS:720, MAX_WIN:600, SLOT_MIN:12, SLOT_RATIO:0.25, PAD_L:2, PAD_T:6, PAD_B:18, MAX_GAP_MIN:5, MAX_AHEAD:360, CHART_RESERVE:270, UP:'#008080', DOWN:'#DC143C', RED:'#FF3B30', IND_WARM:2700 }; // IND_WARM = MA / BBの計算の助走(過去側の1分足の本数)。最長のMTMA 10MA(H4)= 4時間足10本 = 最大2,400本 + 進行中の足を含める。未来側には、1本も足さない
-const M1_PANE_NO_DATA = '1分足データが読み込まれていません(「設定」タブの「1分足CSVを読み込む」から読み込めます)';
+const M1_PANE_NO_DATA = '1分足データが読み込まれていません(「設定」タブの「１分足CSVを読み込む」から読み込めます)';
 function m1Key(c){ return c.date+' '+c.time; }
 function m1KeyMin(k){ return String(k).slice(0,16); }
 function m1KeyToMs(k){ return Date.UTC(+k.slice(0,4), +k.slice(5,7)-1, +k.slice(8,10), +k.slice(11,13), +k.slice(14,16)); }
@@ -11229,7 +11266,7 @@ function m1PaneStoreModel(anchorKey, screen, futureBars){ // チャート / 問�
 }
 function m1PaneModelReplay(){
   const rs = replayState; if(!rs) return { ok:false, message:'練習が始まっていません' };
-  if(!rs.use1m || !rs.oneMin) return { ok:false, message:'1分足データが読み込まれていません(いまは5分足モードです。「設定」タブの「1分足CSVを読み込む」で読み込めます)' };
+  if(!rs.use1m || !rs.oneMin) return { ok:false, message:'1分足データが読み込まれていません(いまは5分足モードです。「設定」タブの「１分足CSVを読み込む」で読み込めます)' };
   const last = rs.cursor1mIdx, from = Math.max(0, last - M1_PANE_STYLE.MAX_BARS + 1);
   const candles = rs.oneMin.slice(from, last+1); // Causal Frontier: cursorまで。cursorより先のM1は、ここで渡さない
   const indicatorCandles = rs.oneMin.slice(Math.max(0, last - M1_PANE_STYLE.MAX_BARS - M1_PANE_STYLE.IND_WARM + 1), last+1); // MA / BB用: 同じくcursorまで + 助走(過去側)。cursorより先は、渡さない
@@ -11326,7 +11363,10 @@ function m1PaneRender(screen, canvas, model){
   ctx.setLineDash([]);
   // 時間グリッド + 時刻ラベル(1分足の本数に合わせて、5〜240分刻み)
   const tstep = [5,10,15,30,60,120,240].find(s=> s*cw >= 44) || 240;
-  const guideRec = m1PaneDrawTimeGuides(ctx, cs, left, lastReal, idxToX, padT, plotBottom, dpr); // [描画順 2/3] 薄い5分点線(xx:05〜55)→ 00分の白縦線(xx:00)。ローソク足・Gold縦線・MA / BBより背面。線は、時刻ラベルの刻みとは別(時刻ラベルは、下の tstep のまま)
+  const guideRec = (()=>{ // [Web v0.3.1] チャートタブの1分足の5分点線(xx:05〜55)は、同じ画面の5分足の1時間線(hourGridStyle(true) = PC: HOUR_GRID_STYLE_PC / スマホ: HOUR_GRID_STYLE_MOBILE)と同じ色・不透明度・線幅・破線にする(違うのは間隔だけ)。m1PaneDrawTimeGuides(保護関数)の本文は変えず、呼ぶ間だけ表の FIVE を差し替える(チャート練習・問題集は従来のまま)
+    const keep = M1_TIME_GUIDE.FIVE; if(screen === 'chart' || (screen === 'replay' && !webSplitMobile())){ const hg = hourGridStyle(true); M1_TIME_GUIDE.FIVE = { color:hg.color, devicePx:hg.devicePx, dash:hg.dash.slice() }; }
+    try{ return m1PaneDrawTimeGuides(ctx, cs, left, lastReal, idxToX, padT, plotBottom, dpr); } finally { M1_TIME_GUIDE.FIVE = keep; }
+  })(); // [描画順 2/3] 薄い5分点線(xx:05〜55)→ 00分の白縦線(xx:00)。ローソク足・Gold縦線・MA / BBより背面。線は、時刻ラベルの刻みとは別(時刻ラベルは、下の tstep のまま)
   ctx.font = "10px 'JetBrains Mono','SF Mono',Consolas,monospace"; ctx.textAlign = 'center';
   for(let i=left;i<=lastReal;i++){
     const t = cs[i].time, tot = (+t.slice(0,2))*60 + (+t.slice(3,5)); if(tot % tstep !== 0) continue;
@@ -18363,7 +18403,8 @@ function drawPriceGrid(ctx, minP, maxP, padL, padR, cssWidth, priceToY){
 const HOUR_GRID_STYLE = { color:'rgba(255,255,255,0.18)', devicePx:0.5, dash:[1,3] };
 const HOUR_GRID_STYLE_PC = { color:'rgba(255,255,255,0.34)', devicePx:1, dash:[1,3] }; // [Web v0.3] PC(WEB)のチャートタブ(drawChartの本体だけ): 0.5デバイスpx・不透明度0.18ではほぼ見えなかったため、MT4の薄いグレーの点線に近づけた(1デバイスpx・不透明度0.34。ローソク足・MA / BBより背面のまま。1時間単位・白・点線は同じ)
 const HOUR_GRID_STYLE_MOBILE = { color:'rgba(255,255,255,0.24)', devicePx:1, dash:[1,3] };
-function hourGridStyle(chartTab){ return (typeof tkIsMobile==='function' && tkIsMobile()) ? HOUR_GRID_STYLE_MOBILE : (chartTab === true ? HOUR_GRID_STYLE_PC : HOUR_GRID_STYLE); } // [Web v0.3] PC: チャートタブの本体(drawChart。chartTab=true)だけ MT4に近い見え方(HOUR_GRID_STYLE_PC)。チャート練習・問題集・サムネイル・プレビュー(drawImg2Core)は、従来(HOUR_GRID_STYLE)のまま
+let hourGridPractice = false; // [Web v0.3.1 build -02] true の間 = PCのチャート練習(drawReplayChart)の描画中。チャートタブと同じ HOUR_GRID_STYLE_PC を使う(style定数は1つのまま = 今後ずれない)。描画の前後で必ず戻す
+function hourGridStyle(chartTab){ return (typeof tkIsMobile==='function' && tkIsMobile()) ? HOUR_GRID_STYLE_MOBILE : ((chartTab === true || hourGridPractice) ? HOUR_GRID_STYLE_PC : HOUR_GRID_STYLE); } // [Web v0.3] PC: チャートタブの本体(drawChart。chartTab=true)だけ MT4に近い見え方(HOUR_GRID_STYLE_PC)。チャート練習・問題集・サムネイル・プレビュー(drawImg2Core)は、従来(HOUR_GRID_STYLE)のまま
 // CustomTimeGrid: 時間軸の縦点線+時刻ラベル(毎正時)。showLabels=falseでラベルなし(小さいプレビュー用)
 function drawHourGrid(ctx, candles, left, right, idxToX, cw, padT, plotH, labelY, showLabels, chartTab){
   if(showLabels===undefined) showLabels = true;
@@ -18421,12 +18462,12 @@ function drawChart(){
   const wrap = document.getElementById('chartCanvasWrap');
   if(!canvas || !wrap || !chartState.candles.length) return;
   const cssWidth = Math.max(320, wrap.clientWidth - 16); // 幅はブラウザいっぱい(比率計算はしない)
-  const wrapTop = wrap.getBoundingClientRect().top;
+  const wrapTop = wrap.getBoundingClientRect().top + (webSplitMobile() ? window.scrollY : 0); // [Web v0.3.1] スマホは、縦にスクロールしても高さが変わらないよう、ページの先頭からの位置で測る(PCは従来のまま)
   // 画面の下端まで埋める(幅の比率とは連動しない)。wrapTopが極端な値(スクロール直後の残差など)でも
   // 異常な高さにならないよう、ウィンドウ高さの2倍を上限にクランプしておく
   const mob = (typeof tkIsMobile==='function' && tkIsMobile()); // [2026-10-15] スマホのチャート(☰ → チャート): 画面の残りいっぱい(高さの下限・下の余白は小さく。1分足ペインは出さない)。PCは従来どおり
-  const m1Rsv = mob ? 0 : m1PaneChartReserve(); // [1分足ペイン] 開いている間だけ、その分だけ高さを譲る(閉じている間は0 = 従来と同じ高さ)
-  const cssHeight = Math.min(window.innerHeight*2, Math.max(mob ? 150 : (m1Rsv ? webSplitMin5() : 400), window.innerHeight - wrapTop - (mob ? 14 : 40) - m1Rsv));
+  const m1Rsv = m1PaneChartReserve(); // [1分足ペイン] 開いている間だけ、その分だけ高さを譲る(閉じている間は0 = 従来と同じ高さ)。[Web v0.3.1] スマホのチャートも、PCと同じく1分足ペインを持つ(以前は 0 固定)
+  const cssHeight = Math.min(window.innerHeight*2, Math.max(m1Rsv ? webSplitMin5() : (mob ? 150 : 400), window.innerHeight - wrapTop - (mob ? 14 : 40) - m1Rsv));
   const dpr = window.devicePixelRatio || 1;
   canvas.width = cssWidth*dpr;
   canvas.height = cssHeight*dpr;
@@ -23237,7 +23278,6 @@ function renderChartView(){
           <button type="button" onclick="setNewArrowColorHtf('#9ACD32')" title="黄緑" style="width:18px;height:18px;border-radius:50%;background:#9ACD32;opacity:0.5;border:2px solid ${chartState.newArrowColorHtf==='#9ACD32'?'#fff':'transparent'};cursor:pointer;padding:0;"></button>
         </span>` : ''}
         <button id="markerMoveModeBtn" class="btn ${chartState.markerMoveMode?'':'ghost'} sm" onclick="toggleMarkerMoveMode()" title="ONの間は▲/△マーカーをドラッグして時間を修正できます。紐づいているレコードがあれば、その日時も一緒に移動します">${chartState.markerMoveMode?'✓ ':''}マーカー移動モード</button>
-        <button class="btn ghost sm" onclick="openFtoIndicatorExport()" title="この期間の5分足矢印(トレンド転換ポイント)を、FTOのインジケータに入力できる形式で出力します">FTOインジケータ用データを出力</button>
       </div>
       <div class="grp" title="手動=今まで通り手書き矢印だけを表示/自動=自動判定候補(黄緑・水色・ピンク)だけを表示/両方=重ねて表示。自動判定は試作のため、判定できた足を消さず、後から否定された候補も残します">
         <span style="font-size:11px;color:var(--sub);margin-right:2px;">表示</span>
@@ -23260,7 +23300,7 @@ function renderChartView(){
       ${m1PanePillHtml('chart')}
       <div class="chart-empty" id="chartEmptyMsg" style="display:none">
         まだGBPUSDの5分足データが読み込まれていません。<br>
-        「設定」タブの「ローソク足CSVを読み込む」から MT4/MT5 でエクスポートしたCSV(タブ区切り、DATE/TIME/OPEN/HIGH/LOW/CLOSE...)を選択してください。<br>
+        「設定」タブの「５分足CSVを読み込む」から MT4/MT5 でエクスポートしたCSV(タブ区切り、DATE/TIME/OPEN/HIGH/LOW/CLOSE...)を選択してください。<br>
         一度読み込めば、次回以降は自動で保存済みデータが使われます(数十MBのCSVでも、月単位に分けて保存するので問題ありません)。
       </div>
       <canvas id="chartCanvas" height="520" style="display:none"></canvas>
@@ -25256,9 +25296,9 @@ function renderSettingsView(){
       <section class="ws-sec" data-ws="chartdata">
         <h3>チャートデータ</h3>
         <div class="ws-row">
-          <button class="btn ghost" onclick="document.getElementById('chartCsvInput').click()" ${chartState.importing?'disabled':''}>ローソク足CSVを読み込む</button>
+          <button class="btn ghost" onclick="document.getElementById('chartCsvInput').click()" ${chartState.importing?'disabled':''}>５分足CSVを読み込む</button>
           <input type="file" id="chartCsvInput" accept=".csv,.txt" style="display:none" onchange="onChartCsvFile(event)">
-          <button class="btn ghost" onclick="document.getElementById('replay1mCsvInput').click()">1分足CSVを読み込む</button>
+          <button class="btn ghost" onclick="document.getElementById('replay1mCsvInput').click()">１分足CSVを読み込む</button>
           <input type="file" id="replay1mCsvInput" accept=".csv,.txt" style="display:none" onchange="onReplay1mCsvFile(event)">
         </div>
         <div class="chart-status" id="chartStatus" style="margin-left:0;text-align:left;">${chartStatusText()}</div>
@@ -25266,6 +25306,12 @@ function renderSettingsView(){
           <button id="chartDataSettingsBtn" class="btn ghost" onclick="toggleChartDataSettings()">⚙ 経済指標・祝日のデータ設定 ${chartState.showDataSettings?'▲':'▼'}</button>
         </div>
         ${chartDataSettingsPanelHtml()}
+      </section>
+      <section class="ws-sec" data-ws="fto">
+        <h3>FTOインジケータ</h3>
+        <div class="ws-row">
+          <button class="btn ghost" onclick="openFtoIndicatorExport()" title="この期間の5分足矢印(トレンド転換ポイント)を、FTOのインジケータに入力できる形式で出力します">FTOインジケータ用データを出力</button>
+        </div>
       </section>
       <section class="ws-sec" data-ws="practice">
         <h3>チャート練習</h3>
@@ -25396,19 +25442,25 @@ function chartDataSettingsPanelHtml(){
    - 比率が無い(既定)の間は、従来と同じ高さ(1分足のcanvas 230px)。最低の高さ: 5分足 200px / 1分足 90px(片側がほぼ消えない) */
 const WEB_M1_CHART_FUTURE_BARS = 720; // チャートタブの1分足: 5分足の右端より先へ表示する、読み込み済みの1分足の本数(12時間分。それ以上先は、5分足を動かすと追従する)
 const WEB_SPLIT_BASE_M1 = 230, WEB_SPLIT_MIN5 = 200, WEB_SPLIT_MIN1 = 90;
+/* [Web v0.3.1] スマホ(iPhone / iPad)のチャートタブ: 5分足と1分足を上下に出す。画面が狭いので、最低の高さ(ローソク足・線が潰れない高さ)と、既定の比率(5分足 62% : 1分足 38%)をスマホ用にする。足りない時は、ページ全体が縦にスクロールする(高さは最低値を下回らない)。PCは何も変わらない */
+const WEB_SPLIT_MOB = { MIN5:170, MIN1:100, SHARE5:0.62, BOTTOM:14 };
+function webSplitMobile(){ return typeof tkIsMobile === 'function' && tkIsMobile(); }
+function webSplitMinH5(){ return webSplitMobile() ? WEB_SPLIT_MOB.MIN5 : WEB_SPLIT_MIN5; }
+function webSplitMinH1(){ return webSplitMobile() ? WEB_SPLIT_MOB.MIN1 : WEB_SPLIT_MIN1; }
 const webSplit = { drag: null, pair: 0 }; // pair = 直前の drawChart(m1PaneChartReserve)で測った、5分足 + 1分足に使える高さの合計(スクロールで1分足の描き直しだけが高さを変えないよう、使い回す。1分足が閉じている間は 0)
 function WEB_SPLIT_CHROME(){ return M1_PANE_STYLE.CHART_RESERVE - WEB_SPLIT_BASE_M1; } // 1分足ペインの見出し・余白(canvas以外)の高さ
 function webSplitPairH(){ // 5分足のcanvas + 1分足のcanvas に使える高さの合計(drawChart の計算と同じ基準)
-  const wrap = document.getElementById('chartCanvasWrap'), top = wrap ? wrap.getBoundingClientRect().top : 0;
-  const avail = Math.min(window.innerHeight*2, window.innerHeight - top - 40);
-  return Math.max(WEB_SPLIT_MIN5 + WEB_SPLIT_MIN1, avail - WEB_SPLIT_CHROME());
+  const wrap = document.getElementById('chartCanvasWrap'), mob = webSplitMobile(), top = wrap ? wrap.getBoundingClientRect().top + (mob ? window.scrollY : 0) : 0; // スマホは、ページの先頭からの位置(スクロールで変わらない)。drawChart の計算と同じ基準
+  const avail = Math.min(window.innerHeight*2, window.innerHeight - top - (mob ? WEB_SPLIT_MOB.BOTTOM : 40));
+  return Math.max(webSplitMinH5() + webSplitMinH1(), avail - WEB_SPLIT_CHROME());
 }
-function webSplitM1Height(){ // 1分足canvasの高さ(px)。比率が無い間は従来の230px
-  if(webPref.splitRatio == null) return WEB_SPLIT_BASE_M1;
-  const pair = webSplit.pair > 0 ? webSplit.pair : webSplitPairH(), m5 = Math.round(pair*webPref.splitRatio);
-  return Math.max(WEB_SPLIT_MIN1, Math.min(pair - WEB_SPLIT_MIN5, pair - m5));
+function webSplitM1Height(){ // 1分足canvasの高さ(px)。比率が無い間は従来の230px(スマホは、5分足 62% : 1分足 38%)
+  const mob = webSplitMobile();
+  if(webPref.splitRatio == null && !mob) return WEB_SPLIT_BASE_M1;
+  const pair = webSplit.pair > 0 ? webSplit.pair : webSplitPairH(), m5 = Math.round(pair*(webPref.splitRatio == null ? WEB_SPLIT_MOB.SHARE5 : webPref.splitRatio));
+  return Math.max(webSplitMinH1(), Math.min(pair - webSplitMinH5(), pair - m5));
 }
-function webSplitMin5(){ return webPref.splitRatio == null ? 280 : WEB_SPLIT_MIN5; } // 比率が無い間の5分足の最低高さは従来(280)のまま
+function webSplitMin5(){ return webSplitMobile() ? WEB_SPLIT_MOB.MIN5 : (webPref.splitRatio == null ? 280 : WEB_SPLIT_MIN5); } // PC: 比率が無い間の5分足の最低高さは従来(280)のまま
 function webSplitHandleHtml(){
   return `<div id="chartSplitter" class="web-splitter" role="separator" aria-orientation="horizontal" aria-label="5分足と1分足の高さ" title="上下にドラッグして、5分足と1分足の高さを調整(ダブルクリックで元の高さへ)" onpointerdown="webSplitDown(event)" ondblclick="webSplitReset()"><span></span></div>`;
 }
@@ -25428,7 +25480,7 @@ function webSplitDown(ev){
 }
 function webSplitMove(ev){
   const d = webSplit.drag; if(!d || ev.pointerId !== d.id) return;
-  const m1H = Math.max(WEB_SPLIT_MIN1, Math.min(d.pair - WEB_SPLIT_MIN5, Math.round(d.m1H0 - (ev.clientY - d.y0)))); // ハンドルを下へ = 5分足が大きく・1分足が小さく
+  const m1H = Math.max(webSplitMinH1(), Math.min(d.pair - webSplitMinH5(), Math.round(d.m1H0 - (ev.clientY - d.y0)))); // ハンドルを下へ = 5分足が大きく・1分足が小さく
   webPref.splitRatio = (d.pair - m1H) / d.pair; d.moved = true;
   if(!d.raf) d.raf = requestAnimationFrame(()=>{ d.raf = 0; webSplitApply(); }); // 連続するmoveは、1フレームに1回の描き直しにまとめる
 }
@@ -25650,7 +25702,7 @@ function tkDrawerOpen(){ const d = document.getElementById('tkDrawer'), s = docu
 function tkDrawerClose(){ const d = document.getElementById('tkDrawer'), s = document.getElementById('tkDrawerScrim'); if(d) d.classList.remove('tk-open'); if(s) s.classList.remove('tk-open'); tkUi.drawer = false; }
 function tkDrawerToggle(){ if(tkUi.drawer) tkDrawerClose(); else tkDrawerOpen(); }
 function tkSetMarket(m){ setReplayMarket(m); tkDrawerRefresh(); } // 既存の setReplayMarket(PCと同じ。保存先も replay_market_pref_v1)。切り替えられない時は、既存の理由が表示される
-function tkNav(view){ tkDrawerClose(); if(view==='chart') m1Pane.on.chart = false; /* スマホのチャートは5分足だけ(1分足ペインは出さない) */ setView(view); }
+function tkNav(view){ tkDrawerClose(); if(view==='chart' && !tkUi.chartM1Init){ tkUi.chartM1Init = true; m1Pane.on.chart = true; m1Pane.pan.chart = 0; m1Pane.hover.chart = null; m1Pane.focusPending.chart = true; } /* [Web v0.3.1] スマホのチャートも、PCと同じく5分足 + 1分足。初めて開く時だけ1分足ONで始める(以後は、利用者の開閉のまま。以前は毎回OFFに戻して、1分足を出さなかった) */ setView(view); }
 function tkDataBackup(){ exportAllData(); } // 既存のBackup(PCと同じファイル)
 function tkDataPick(inputId){ const el = document.getElementById(inputId); if(el) el.click(); tkDrawerClose(); } // Restore = 既存の importFileInput / Merge Import = #mergeFileInput(どちらもPCと同じ入力。取込の処理は別々)
 // ---- 日付範囲画面(最初の画面)。開始日の処理は既存の startReplaySessionForDate。終了日 = 進捗の分母を絞る + 「次の日へ」の上限 ----
@@ -25894,7 +25946,7 @@ function tkSplitKey(ev){ // 外付けキーボード用: ↑で1分足を高く 
   ev.preventDefault(); const h = tkSplitClamp(m, pane.getBoundingClientRect().height + (ev.key==='ArrowUp' ? 16 : -16)); tkUi.m1Ratio = h / m.H; tkSplitApply(true);
 }
 // ---- タッチ: 既存のマウス用の処理(パン・水平線の配置とドラッグ・1分足のパン)へ橋渡しする。ピンチ = 拡大縮小。ページはスクロール・ズームしない ----
-function tkCanvasKind(t){ return t && t.id==='replayCanvas' ? 'main' : (t && t.id==='replayM1Canvas' ? 'm1' : (t && t.id==='chartCanvas' ? 'chart' : null)); } // 'chart' = ☰ → チャート(通常のChartタブのcanvas。パン / ピンチだけ。タップをclickへは渡さない = 閲覧用)
+function tkCanvasKind(t){ return t && t.id==='replayCanvas' ? 'main' : (t && t.id==='replayM1Canvas' ? 'm1' : (t && t.id==='chartCanvas' ? 'chart' : (t && t.id==='chartM1Canvas' ? 'chartm1' : null))); } // 'chart' = ☰ → チャート(通常のChartタブのcanvas。パン / ピンチだけ。タップをclickへは渡さない = 閲覧用) / 'chartm1' = [Web v0.3.1] そのチャートタブの1分足(同じく、パン / ピンチだけ)
 function tkMouseEvent(type, cv, cx, cy){
   const r = cv.getBoundingClientRect(), ev = new MouseEvent(type, { bubbles:true, cancelable:true, clientX:cx, clientY:cy, screenX:cx, screenY:cy, button:0, buttons:(type==='mouseup' || type==='click') ? 0 : 1, view:window });
   Object.defineProperty(ev, 'offsetX', { value:cx - r.left }); Object.defineProperty(ev, 'offsetY', { value:cy - r.top }); // WebKitでも同じ値になるよう、明示する(既存の処理は offsetX / offsetY を使う)
@@ -25904,12 +25956,12 @@ function tkPinchDist(a, b){ return Math.hypot(a.clientX - b.clientX, a.clientY -
 function tkTouchStart(ev){
   if(!tkIsMobile()) return;
   const kind = tkCanvasKind(ev.target); if(!kind) return;
-  if(kind!=='chart' && !replayState) return; // チャート練習のcanvasは、練習中だけ / Chartタブのcanvasは、練習と無関係
+  if(kind!=='chart' && kind!=='chartm1' && !replayState) return; // チャート練習のcanvasは、練習中だけ / Chartタブのcanvas(5分足・1分足)は、練習と無関係
   ev.preventDefault();
   const cv = ev.target;
   if(ev.touches.length >= 2){
     if(tkUi.touch && tkUi.touch.mode==='drag') cv.dispatchEvent(tkMouseEvent('mouseup', cv, tkUi.touch.x0, tkUi.touch.y0)); // 1本指の操作を終える
-    tkUi.touch = { mode:'pinch', kind, cv, d0:tkPinchDist(ev.touches[0], ev.touches[1]), w0:(kind==='main' ? replayState.windowSize : kind==='chart' ? chartState.windowSize : m1Pane.win.replay) };
+    tkUi.touch = { mode:'pinch', kind, cv, d0:tkPinchDist(ev.touches[0], ev.touches[1]), w0:(kind==='main' ? replayState.windowSize : kind==='chart' ? chartState.windowSize : kind==='chartm1' ? m1Pane.win.chart : m1Pane.win.replay) };
     return;
   }
   const p = ev.touches[0];
@@ -25925,7 +25977,7 @@ function tkTouchMove(ev){
     const target = Math.round(s.w0 * s.d0 / d); // 指を広げる(d が大きい)と、表示本数が減る = 拡大
     if(s.kind==='main'){ if(replayState && target !== replayState.windowSize) replayZoomBy(target / replayState.windowSize); }
     else if(s.kind==='chart'){ if(target !== chartState.windowSize && chartState.windowSize > 0) zoomChart(target / chartState.windowSize); } // Chartタブ: 既存のzoomChart(－縮小 / ＋拡大ボタンと同じ)
-    else { const nw = chartViewportZoomedWindow(m1Pane.win.replay, target / m1Pane.win.replay); if(nw !== m1Pane.win.replay){ m1Pane.win.replay = nw; m1PaneRedraw('replay'); } }
+    else { const scr = s.kind==='chartm1' ? 'chart' : 'replay', nw = chartViewportZoomedWindow(m1Pane.win[scr], target / m1Pane.win[scr]); if(nw !== m1Pane.win[scr]){ m1Pane.win[scr] = nw; m1PaneRedraw(scr); } }
     return;
   }
   if(ev.touches.length !== 1) return;
@@ -25939,7 +25991,7 @@ function tkTouchEnd(ev){
   if(s.mode==='pinch'){ if(ev.touches.length < 2) tkUi.touch = null; return; }
   const p = ev.changedTouches[0] || { clientX:s.x0, clientY:s.y0 };
   s.cv.dispatchEvent(tkMouseEvent('mouseup', s.cv, p.clientX, p.clientY));
-  if(s.kind!=='chart' && (!s.moved || replayRedLineDidDrag)) s.cv.dispatchEvent(tkMouseEvent('click', s.cv, p.clientX, p.clientY)); // タップ = マウスのクリックと同じ(水平線の配置)。水平線のドラッグの後は、既存の「直前がドラッグ」の印を戻すため
+  if(s.kind!=='chart' && s.kind!=='chartm1' && (!s.moved || replayRedLineDidDrag)) s.cv.dispatchEvent(tkMouseEvent('click', s.cv, p.clientX, p.clientY)); // タップ = マウスのクリックと同じ(水平線の配置)。水平線のドラッグの後は、既存の「直前がドラッグ」の印を戻すため
   tkUi.touch = null; tkEventsSync(); // パン・ズームで、チャートに出ている範囲が変わった時は、重ね表示も合わせる
 }
 // ---- 描画の入口: PCでは元の関数をそのまま呼ぶ。スマホの時だけ、画面を差し替える ----
