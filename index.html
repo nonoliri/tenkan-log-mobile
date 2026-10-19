@@ -444,9 +444,9 @@
    - Backupのschema_version・Practice Runのversion・Analysis Packの build_id(replayAnalysisBuildId = コードのハッシュ)とは別物。これらには触れない・保存もしない(表示だけ)
    - build を更新するのは、HTMLを配布する人(リリースの度に build id を新しくする)
    ------------------------------------------------------------ */
-const APP_BUILD_INFO = Object.freeze({ version:'v0.3.1', build:'2026-10-18-02' });
-function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.1 · build 2026-10-18-02」
-function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.1」「Build: 2026-10-18-02」
+const APP_BUILD_INFO = Object.freeze({ version:'v0.3.1', build:'2026-10-19-01' });
+function appBuildTextPc(){ return APP_BUILD_INFO.version + ' · build ' + APP_BUILD_INFO.build; } // PC: 「v0.3.1 · build 2026-10-19-01」
+function appBuildLinesMobile(){ return ['Version: ' + APP_BUILD_INFO.version, 'Build: ' + APP_BUILD_INFO.build]; } // スマホ(☰メニュー): 「Version: v0.3.1」「Build: 2026-10-19-01」
 (function appBuildApply(){ const el = document.getElementById('appVersionBadge'); if(el) el.textContent = appBuildTextPc(); })(); // PC表示(スマホでは CSS で隠す)
 /* ============================================================
    軸(次元)ベースのラベル定義
@@ -3719,7 +3719,9 @@ function renderReplayViewContent(){
     </div>`;
   };
   const dayTotalText = v=>{ let s = v.toFixed(2); if(s.endsWith('0')) s = s.slice(0,-1); return (v>0 ? '+' : '')+s; }; // 日計の表示: 少なくとも小数1桁(+15.0 / 0.0 / -3.7)。2桁が要る時だけ2桁(Net -4.45 など = 各行の合計と同じ)
-  const tradesHtml = replayHistoryGroups(replayState, hv).map(g=>{
+  const hgroups = replayHistoryGroups(replayState, hv);
+  const sessionTotal = Math.round(hgroups.reduce((a,g)=>a+g.total,0)*100)/100 || 0; // [Web v0.3.1 build 2026-10-19-01] 履歴全体の「合計 Net」= いま履歴に残っている決済済みトレード全部のNetの合計(= 日計の合計。日をまたいでも、NYの0時を跨いでも、全部。保有中は入らない)。-0 は 0
+  const tradesHtml = hgroups.map(g=>{
     const dc = g.total>=0 ? '#4DB6AC' : '#DC143C';
     return `<div data-history="day" data-market-date="${g.market_date}" style="display:flex;align-items:stretch;">
       <div style="flex:1 1 auto;min-width:0;">${g.idx.map(i=> tradeRowHtml(replayState.closedTrades[i], i)).join('')}</div>
@@ -3728,7 +3730,7 @@ function renderReplayViewContent(){
   }).join('');
   const unit = replayState.use1m ? '分足' : '5分足';
   const cd = replayCurrentCandle();
-  // [Web v0.3.1 build -02] 履歴全体の「合計 Net」は表示しない(market_date ごとの「日計」だけ)。hv.total は、ここでは使わない
+  // [Web v0.3.1 build 2026-10-19-01] 履歴の見出しの右に、履歴全体の「合計 Net」(sessionTotal)を出す。各 market_date の右の「日計」(日ごとの合計)は、別のもの = 両方出す(直前の build 2026-10-18-02 は、合計 Net を消していた)
   const progressCur = replayState.use1m ? replayState.cursor1mIdx : (replayState.cursorIdx-replayState.startIdx);
   const progressMax = replayState.use1m ? replayState.max1mIdx : (replayState.maxIdx-replayState.startIdx);
   return `
@@ -3794,6 +3796,7 @@ function renderReplayViewContent(){
             ${replayState.closedTrades.length ? `<div style="border-top:1px solid var(--line);padding-top:8px;">
               <div style="font-size:11px;color:var(--sub);margin-bottom:4px;display:flex;justify-content:space-between;">
                 <span data-history="title" data-basis="${hv.basis}" title="${hv.help}">${hv.title}・保存されません</span>
+                <span data-history="total" data-basis="${hv.basis}" title="この練習(Replay Session)の履歴に残っている決済済みのTradeの${hv.label}の合計(全日ぶん。保有中のPositionは入りません)。日ごとの合計は、各日の右の「日計」" style="color:${sessionTotal>=0?'#4DB6AC':'#DC143C'};font-weight:700;white-space:nowrap;">合計 ${hv.label} ${dayTotalText(sessionTotal)}pips</span>
               </div>
               ${tradesHtml}
             </div>` : ''}
@@ -11165,6 +11168,7 @@ var m1Pane = {
   drawn: { replay:null, chart:null, quiz:null },             // 直近の描画の記録(transient。保存しない・テスト用に読める)
   layout: { replay:null, chart:null, quiz:null },
   follow: { replay:null, chart:null, quiz:null },            // 追従位置が変わったら、ドラッグ位置を0へ戻すための目印
+  openPending: { replay:false, chart:false, quiz:false },    // [Web v0.3.1 build 2026-10-19-01] チャートタブの1分足を「初めて表示した時」だけ true。その1回だけ、5分足の右端より先(未来側の1分足)が見える初期位置にする(「この日時へ」・5分足の移動への追従・Replay系は、従来の位置合わせのまま)
   focusPending: { replay:false, chart:false, quiz:false },   // 開いた直後・追従位置が変わった直後に、注目している時刻(focusKey)が見える位置へ、1回だけ合わせる(見る位置だけ。データの範囲は変えない)
   cands: { replay:null, chart:null, quiz:null },             // 直近の描画に使った(frontierで絞った)1分足。ホバーの表示用
   drag: null, quizCtx: null, tried: {}, rs: null
@@ -11175,6 +11179,7 @@ const M1_PANE_IDS = {
   quiz:   { canvas:'quizM1Canvas',   slot:'quizM1Slot',   btn:'quizM1ToggleBtn' }
 };
 const M1_PANE_STYLE = { MAX_BARS:720, MAX_WIN:600, SLOT_MIN:12, SLOT_RATIO:0.25, PAD_L:2, PAD_T:6, PAD_B:18, MAX_GAP_MIN:5, MAX_AHEAD:360, CHART_RESERVE:270, UP:'#008080', DOWN:'#DC143C', RED:'#FF3B30', IND_WARM:2700 }; // IND_WARM = MA / BBの計算の助走(過去側の1分足の本数)。最長のMTMA 10MA(H4)= 4時間足10本 = 最大2,400本 + 進行中の足を含める。未来側には、1本も足さない
+const M1_PANE_OPEN_FUT_RATIO = 0.35; // [Web v0.3.1 build 2026-10-19-01] チャートタブの1分足を初めて表示した時、5分足の右端を置く位置 = 窓の右から35%(目安は30〜40%)。右側35%が、右端より先(未来側)の1分足
 const M1_PANE_NO_DATA = '1分足データが読み込まれていません(「設定」タブの「１分足CSVを読み込む」から読み込めます)';
 function m1Key(c){ return c.date+' '+c.time; }
 function m1KeyMin(k){ return String(k).slice(0,16); }
@@ -11229,8 +11234,8 @@ function m1PaneChartReserve(){ if(!(m1Pane.on.chart && document.getElementById(M
 function m1PaneToggle(screen){
   if(!M1_PANE_IDS[screen]) return;
   m1Pane.on[screen] = !m1Pane.on[screen];
-  if(m1Pane.on[screen]){ m1Pane.pan[screen] = 0; m1Pane.hover[screen] = null; m1Pane.focusPending[screen] = true; } // 開いた直後は、いまのcursor / frontierに追従した位置から(チャート・問題集は、注目している時刻が見える位置へ)
-  else { m1Pane.drawn[screen] = null; m1Pane.layout[screen] = null; m1Pane.hover[screen] = null; m1Pane.cands[screen] = null; m1Pane.ahead[screen] = 0; if(m1Pane.drag && m1Pane.drag.screen===screen) m1Pane.drag = null; } // 閉じたら、1分足は何も持たない(開き直すたびに、いまのcursor / frontierから作り直す)
+  if(m1Pane.on[screen]){ m1Pane.pan[screen] = 0; m1Pane.hover[screen] = null; m1Pane.focusPending[screen] = true; m1Pane.openPending[screen] = (screen === 'chart'); } // 開いた直後は、いまのcursor / frontierに追従した位置から(チャート・問題集は、注目している時刻が見える位置へ)
+  else { m1Pane.openPending[screen] = false; m1Pane.drawn[screen] = null; m1Pane.layout[screen] = null; m1Pane.hover[screen] = null; m1Pane.cands[screen] = null; m1Pane.ahead[screen] = 0; if(m1Pane.drag && m1Pane.drag.screen===screen) m1Pane.drag = null; } // 閉じたら、1分足は何も持たない(開き直すたびに、いまのcursor / frontierから作り直す)
   m1PaneSync(screen);
 }
 function m1PaneSync(screen){ // ボタンの文言と1分足の領域を、いまの状態に合わせて、5分足(高さが変わる)と1分足を描き直す。Replay / Trade / 水平線 / 答え合わせの状態には、触れない
@@ -11341,8 +11346,16 @@ function m1PaneRender(screen, canvas, model){
   }
   if(m1Pane.focusPending[screen]){ // 注目している時刻(focusKey)が、窓の右から30%の位置に見えるようにする(1回だけ。以後はドラッグ・ズームのまま)
     m1Pane.focusPending[screen] = false;
-    const fi = model.focusKey ? m1PaneTimeToIdx(cs, model.focusKey, vp.nSlots) : null;
-    if(fi != null){ m1Pane.pan[screen] = chartViewportClampRight(Math.min(vp.autoRight, fi + Math.round(vp.win*0.3)) - vp.autoRight, vp.minOffset, 0); vp = m1PaneViewport(screen, n); }
+    const openFirst = !!m1Pane.openPending[screen]; m1Pane.openPending[screen] = false;
+    let placed = false;
+    if(openFirst && screen === 'chart' && model.future){ // [Web v0.3.1 build 2026-10-19-01] チャートタブの1分足を初めて表示した時だけ: 5分足の右端(anchorKey)を、窓の右から OPEN_FUT_RATIO(35%)の位置に置く = 右側35%は、右端より先の1分足(未来側)。見る位置だけ(データの範囲 = 未来720本は変えない)。未来側の足が1本も無い時(CSVの最後)・Case Review / Step Replay(model.future = false)・「この日時へ」・5分足の移動への追従は、下の従来の位置合わせのまま。表示した後は、ドラッグ・ズームのまま(再描画で戻さない)
+      const ai = m1UpperBound(cs, model.anchorKey) - 1;
+      if(ai >= 0 && n-1-ai > 0){ m1Pane.pan[screen] = chartViewportClampRight(Math.min(vp.autoRight, ai + Math.round(vp.win*M1_PANE_OPEN_FUT_RATIO)) - vp.autoRight, vp.minOffset, 0); vp = m1PaneViewport(screen, n); placed = true; }
+    }
+    if(!placed){
+      const fi = model.focusKey ? m1PaneTimeToIdx(cs, model.focusKey, vp.nSlots) : null;
+      if(fi != null){ m1Pane.pan[screen] = chartViewportClampRight(Math.min(vp.autoRight, fi + Math.round(vp.win*0.3)) - vp.autoRight, vp.minOffset, 0); vp = m1PaneViewport(screen, n); }
+    }
   }
   const left = vp.left, right = vp.right, lastReal = Math.min(right, n-1);
   const padL = M1_PANE_STYLE.PAD_L, padR = REPLAY_PRICE_AXIS_W, padT = M1_PANE_STYLE.PAD_T, padB = M1_PANE_STYLE.PAD_B, plotW = cssWidth-padL-padR, plotH = Math.max(10, cssHeight-padT-padB), cols = Math.max(right-left+1, (typeof tkIsMobile==='function' && tkIsMobile()) ? vp.win : 0), off = cols-(right-left+1), cw = plotW/cols, axisX = cssWidth-padR; // [スマホ v0.2] 1分足が少ない間(データの最初の日)も、1本の幅を一定に保ち(cols >= vp.win = 表示本数)、最新足は右寄せ(足の無い左側 off 列は空白)。PCは従来のまま(off = 0)
@@ -25702,7 +25715,7 @@ function tkDrawerOpen(){ const d = document.getElementById('tkDrawer'), s = docu
 function tkDrawerClose(){ const d = document.getElementById('tkDrawer'), s = document.getElementById('tkDrawerScrim'); if(d) d.classList.remove('tk-open'); if(s) s.classList.remove('tk-open'); tkUi.drawer = false; }
 function tkDrawerToggle(){ if(tkUi.drawer) tkDrawerClose(); else tkDrawerOpen(); }
 function tkSetMarket(m){ setReplayMarket(m); tkDrawerRefresh(); } // 既存の setReplayMarket(PCと同じ。保存先も replay_market_pref_v1)。切り替えられない時は、既存の理由が表示される
-function tkNav(view){ tkDrawerClose(); if(view==='chart' && !tkUi.chartM1Init){ tkUi.chartM1Init = true; m1Pane.on.chart = true; m1Pane.pan.chart = 0; m1Pane.hover.chart = null; m1Pane.focusPending.chart = true; } /* [Web v0.3.1] スマホのチャートも、PCと同じく5分足 + 1分足。初めて開く時だけ1分足ONで始める(以後は、利用者の開閉のまま。以前は毎回OFFに戻して、1分足を出さなかった) */ setView(view); }
+function tkNav(view){ tkDrawerClose(); if(view==='chart' && !tkUi.chartM1Init){ tkUi.chartM1Init = true; m1Pane.on.chart = true; m1Pane.pan.chart = 0; m1Pane.hover.chart = null; m1Pane.focusPending.chart = true; m1Pane.openPending.chart = true; } /* [Web v0.3.1] スマホのチャートも、PCと同じく5分足 + 1分足。初めて開く時だけ1分足ONで始める(以後は、利用者の開閉のまま。以前は毎回OFFに戻して、1分足を出さなかった) */ setView(view); }
 function tkDataBackup(){ exportAllData(); } // 既存のBackup(PCと同じファイル)
 function tkDataPick(inputId){ const el = document.getElementById(inputId); if(el) el.click(); tkDrawerClose(); } // Restore = 既存の importFileInput / Merge Import = #mergeFileInput(どちらもPCと同じ入力。取込の処理は別々)
 // ---- 日付範囲画面(最初の画面)。開始日の処理は既存の startReplaySessionForDate。終了日 = 進捗の分母を絞る + 「次の日へ」の上限 ----
